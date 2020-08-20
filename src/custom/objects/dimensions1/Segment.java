@@ -3,7 +3,11 @@ package custom.objects.dimensions1;
 import custom.objects.dimensions0.Point;
 import custom.utils.D1Utils;
 
-public class Segment {
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.TreeSet;
+
+public class Segment implements Comparable<Segment> {
 
     private final Point startPoint;
     private final Point endPoint;
@@ -37,5 +41,22 @@ public class Segment {
 
     public double getLength() {
         return this.length;
+    }
+
+    @Override
+    public int compareTo(Segment o) {
+        TreeSet<Point> thisPoints = new TreeSet<>(Arrays.asList(this.getStartPoint(), this.getEndPoint()));
+
+        TreeSet<Point> otherPoints = new TreeSet<>(Arrays.asList(o.getStartPoint(), o.getEndPoint()));
+
+        Iterator<Point> thisIterator = thisPoints.iterator();
+        Iterator<Point> otherIterator = otherPoints.iterator();
+
+        while (thisIterator.hasNext()) {
+            int result = thisIterator.next().compareTo(otherIterator.next());
+            if (result != 0) return result;
+
+        }
+        return 0;
     }
 }

@@ -5,7 +5,7 @@ import custom.objects.dimensions2.Face;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Edge {
+public class Edge implements Comparable<Edge> {
 
     private final Segment segment;
 
@@ -29,5 +29,10 @@ public class Edge {
 
     public Set<Face> getAdjacentFaces() {
         return adjacentFaces;
+    }
+
+    @Override
+    public int compareTo(Edge o) {
+        return this.getSegment().compareTo(o.getSegment());
     }
 }
