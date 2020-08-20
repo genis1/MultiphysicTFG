@@ -5,6 +5,14 @@ import custom.objects.dimensions1.Vector;
 public class Point implements Comparable<Point> {
     private final double[] coordinates;
 
+    /**
+     * Creating an Point object does not save it in the Euclidean3DSpace.
+     * To save the object use Euclidean3DSpace::getOrCreatePoint
+     *
+     * @param xCoordinate x coordinate
+     * @param yCoordinate y coordinate
+     * @param zCoordinate z coordinate
+     */
     public Point(double xCoordinate, double yCoordinate, double zCoordinate) {
         this.coordinates = new double[]{xCoordinate, yCoordinate, zCoordinate};
     }

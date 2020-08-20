@@ -1,6 +1,6 @@
 package custom.utils;
 
-import custom.objects.dimensions1.Segment;
+import custom.objects.dimensions1.Edge;
 import custom.objects.dimensions1.Vector;
 
 public class D1Utils {
@@ -14,8 +14,8 @@ public class D1Utils {
         return D1Utils.length(new double[]{vector.getXCoordinate(), vector.getYCoordinate(), vector.getZCoordinate()});
     }
 
-    public static double length(Segment segment) {
-        return D1Utils.length(segment.getVector());
+    public static double length(Edge edge) {
+        return D1Utils.length(edge.getVector());
     }
 
 

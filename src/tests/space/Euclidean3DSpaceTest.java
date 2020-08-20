@@ -6,38 +6,38 @@ import custom.space.Euclidean3DSpace;
 
 public class Euclidean3DSpaceTest {
     public static void main(String[] args) {
+        //testAddingPoints();
         //testAddingPyramid();
-        testCotainsPyramid();
+        testContainsPyramid();
     }
 
-    private static void testCotainsPyramid() {
-        TriangularPyramid pyramid1 = new TriangularPyramid(new Point(0, 0, 0),
+    private static void testContainsPyramid() {
+        TriangularPyramid pyramid1 = Euclidean3DSpace.getOrCreateTriangularPyramid(new Point(0, 0, 0),
                 new Point(0, 1, 0),
                 new Point(1, 1, 0),
                 new Point(1, 1, 1));
-        TriangularPyramid pyramid2 = new TriangularPyramid(new Point(0, 0, 0),
+        TriangularPyramid pyramid2 = Euclidean3DSpace.getOrCreateTriangularPyramid(new Point(0, 0, 0),
                 new Point(0, 1, 0),
                 new Point(1, 1, 0),
                 new Point(1, 1, 1));
-        Euclidean3DSpace.addPyramid(pyramid1);
-        System.out.println(Euclidean3DSpace.getPolyhedron().contains(pyramid2));
+        System.out.println(Euclidean3DSpace.getPolyhedra().size() == 1);
     }
 
     private static void testAddingPoints() {
-        Euclidean3DSpace.addPoint(new Point(0, 1, 2));
-        Euclidean3DSpace.addPoint(new Point(0, 1, 2)); //Duplicate
-        Euclidean3DSpace.addPoint(new Point(1, -1, 3));
-        Euclidean3DSpace.addPoint(new Point(1.5, 1, 2));
-        Euclidean3DSpace.addPoint(new Point(1.5, 2, 2));
-        Euclidean3DSpace.addPoint(new Point(2, 1, 2));
-        Euclidean3DSpace.addPoint(new Point(1.5, 1, 3));
-        Euclidean3DSpace.addPoint(new Point(1 - 1, 1, 2));//Duplicate
-        Euclidean3DSpace.addPoint(new Point(1 - 1, 1, 3));
+        Euclidean3DSpace.getOrCreatePoint(new Point(0, 1, 2));
+        Euclidean3DSpace.getOrCreatePoint(new Point(0, 1, 2)); //Duplicate
+        Euclidean3DSpace.getOrCreatePoint(new Point(1, -1, 3));
+        Euclidean3DSpace.getOrCreatePoint(new Point(1.5, 1, 2));
+        Euclidean3DSpace.getOrCreatePoint(new Point(1.5, 2, 2));
+        Euclidean3DSpace.getOrCreatePoint(new Point(2, 1, 2));
+        Euclidean3DSpace.getOrCreatePoint(new Point(1.5, 1, 3));
+        Euclidean3DSpace.getOrCreatePoint(new Point(1 - 1, 1, 2));//Duplicate
+        Euclidean3DSpace.getOrCreatePoint(new Point(1 - 1, 1, 3));
         Euclidean3DSpace.printPoints();
     }
 
     private static void testAddingPyramid() {
-        Euclidean3DSpace.addPyramid(
+        Euclidean3DSpace.getOrCreateTriangularPyramid(
                 new Point(0, 0, 0),
                 new Point(0, 1, 0),
                 new Point(1, 1, 0),
