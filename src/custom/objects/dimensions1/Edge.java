@@ -31,6 +31,8 @@ public class Edge implements Comparable<Edge> {
     public Edge(Point startPoint, Point endPoint) {
         startPoint = Euclidean3DSpace.getOrCreatePoint(startPoint);
         endPoint = Euclidean3DSpace.getOrCreatePoint(endPoint);
+        startPoint.addAdjacentEdge(this);
+        endPoint.addAdjacentEdge(this);
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         this.length = D1Utils.length(this);

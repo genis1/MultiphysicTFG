@@ -36,13 +36,13 @@ public class Euclidean3DSpace {
 
     public static Point getOrCreatePoint(Point newPoint) {
         //Try finding point
-        Set<Point> existingPoints = Euclidean3DSpace.points.stream()
+        Set<Point> anyPointFound = Euclidean3DSpace.points.stream()
                 .filter(existingPoint -> existingPoint.compareTo(newPoint) == 0)
                 .collect(Collectors.toSet());
-        if (existingPoints.size() > 1) throw new IllegalStateException("A point is duplicated");
-        else if (existingPoints.size() == 1) {
+        if (anyPointFound.size() > 1) throw new IllegalStateException("A point is duplicated");
+        else if (anyPointFound.size() == 1) {
             //Point found
-            return existingPoints.iterator().next();
+            return anyPointFound.iterator().next();
         } else {
             //Point not found, creating one
             Euclidean3DSpace.addPoints(newPoint);

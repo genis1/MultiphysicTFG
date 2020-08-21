@@ -1,4 +1,4 @@
 This projects works on an Euclidean 3D space (Eculidean3DSpace.java)
 
-All objects have relations to its constituents. All constituents of dimension n > 0 have relation to its composites of dimension n + 1.
+All objects have references to all its constituents. All constituents of dimension n have references to its composites of dimension n + 1.
 This relations are created in the constructor of the composite and removed by Euclidean3DSpace.java

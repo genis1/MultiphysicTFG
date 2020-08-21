@@ -1,9 +1,14 @@
 package custom.objects.dimensions0;
 
+import custom.objects.dimensions1.Edge;
 import custom.objects.dimensions1.Vector;
+
+import java.util.TreeSet;
 
 public class Point implements Comparable<Point> {
     private final double[] coordinates;
+
+    private TreeSet<Edge> adjacentEdges = new TreeSet<>();
 
     /**
      * Creating an Point object does not save it in the Euclidean3DSpace.
@@ -27,6 +32,18 @@ public class Point implements Comparable<Point> {
 
     public double getZCoordinate() {
         return this.coordinates[2];
+    }
+
+    public void addAdjacentEdge(Edge edge) {
+        this.adjacentEdges.add(edge);
+    }
+
+    public void removeAdjacentEdge(Edge edge) {
+        this.adjacentEdges.remove(edge);
+    }
+
+    public TreeSet<Edge> getAdjacentFaces() {
+        return this.adjacentEdges;
     }
 
     public void print() {
