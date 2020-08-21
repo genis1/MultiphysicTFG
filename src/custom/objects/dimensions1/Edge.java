@@ -3,6 +3,7 @@ package custom.objects.dimensions1;
 import custom.objects.dimensions0.Point;
 import custom.objects.dimensions2.Face;
 import custom.space.Euclidean3DSpace;
+import custom.utils.Centroid;
 import custom.utils.D1Utils;
 
 import java.util.Arrays;
@@ -12,8 +13,7 @@ import java.util.TreeSet;
 
 public class Edge implements Comparable<Edge> {
 
-    private final Point startPoint;
-    private final Point endPoint;
+    private final TreeSet<Point> points = new TreeSet<>();
 
     private Set<Face> adjacentFaces = new TreeSet<>();
 
@@ -29,21 +29,20 @@ public class Edge implements Comparable<Edge> {
      * @param endPoint   end point
      */
     public Edge(Point startPoint, Point endPoint) {
+
         startPoint = Euclidean3DSpace.getOrCreatePoint(startPoint);
         endPoint = Euclidean3DSpace.getOrCreatePoint(endPoint);
-        this.startPoint = startPoint;
-        this.endPoint = endPoint;
-        startPoint.addAdjacentEdge(this);
-        endPoint.addAdjacentEdge(this);
+        points.add(startPoint);
+        points.add(endPoint);
         this.length = D1Utils.length(this);
     }
 
     public Point getStartPoint() {
-        return startPoint;
+        return points.first();
     }
 
     public Point getEndPoint() {
-        return endPoint;
+        return points.last();
     }
 
     public void addAdjacentFace(Face face) {
@@ -69,6 +68,10 @@ public class Edge implements Comparable<Edge> {
         return this.vector;
     }
 
+    public Point getCentroid() {
+        return Centroid.getFrom(this);
+    }
+
     public double getLength() {
         return this.length;
     }
@@ -79,22 +82,21 @@ public class Edge implements Comparable<Edge> {
 
     @Override
     public String toString() {
-        return this.getStartPoint().toString() + " -> " + this.getEndPoint().toString();
+        return this.getStartPoint().toString() + " -> " + this.getEndPoint().toString() + "  l: " + this.getLength();
     }
 
     @Override
     public int compareTo(Edge o) {
-
-        Point otherStartPoint = o.getStartPoint();
-        Point otherEndPoint = o.getEndPoint();
-        return compareTo(otherStartPoint, otherEndPoint);
+        return compareTo(o.points);
     }
 
     public int compareTo(Point otherStartPoint, Point otherEndPoint) {
         TreeSet<Point> otherPoints = new TreeSet<>(Arrays.asList(otherStartPoint, otherEndPoint));
-        TreeSet<Point> thisPoints = new TreeSet<>(Arrays.asList(this.getStartPoint(), this.getEndPoint()));
+        return compareTo(otherPoints);
+    }
 
-        Iterator<Point> thisIterator = thisPoints.iterator();
+    private int compareTo(TreeSet<Point> otherPoints) {
+        Iterator<Point> thisIterator = this.points.iterator();
         Iterator<Point> otherIterator = otherPoints.iterator();
 
         while (thisIterator.hasNext()) {

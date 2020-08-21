@@ -6,9 +6,9 @@ import custom.space.Euclidean3DSpace;
 public class E3DSAdditionSubstractionTest {
     public static void main(String[] args) {
         //testFaceAdjacency();
-        //testEdgeAdjacency();
+        testEdgeAdjacency();
         //testElimination();
-        testCompleteElimination();
+        //testCompleteElimination();
     }
 
     private static void testFaceAdjacency() {
@@ -27,14 +27,14 @@ public class E3DSAdditionSubstractionTest {
         Point planePoint0 = new Point(1, 0, 0);
         Point planePoint1 = new Point(0, 1, 0);
         Point planePoint2 = new Point(-1, -1, 0);
-        Point positive = new Point(0, 0, 1);
-        Point negative = new Point(0, 0, -1);
+        Point positive = new Point(0, 0, 10);
+        Point negative = new Point(0, 0, -10);
 
         Euclidean3DSpace.getOrCreateTriangularPyramid(planePoint0, planePoint1, positive, negative);
         Euclidean3DSpace.getOrCreateTriangularPyramid(planePoint0, planePoint2, positive, negative);
         Euclidean3DSpace.getOrCreateTriangularPyramid(planePoint1, planePoint2, positive, negative);
 
-        Euclidean3DSpace.printShapes();
+        //Euclidean3DSpace.printShapes();
     }
 
     private static void testElimination() {

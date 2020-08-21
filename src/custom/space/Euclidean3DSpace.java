@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class Euclidean3DSpace {
 
     private static final Set<Point> points = new TreeSet<>();
-    private static final Set<Edge> edges = new TreeSet<>();
+    private static final TreeSet<Edge> edges = new TreeSet<>();
     private static final Set<Face> faces = new TreeSet<>();
     private static final Set<Polyhedron> polyhedra = new TreeSet<>();
 
@@ -54,7 +54,7 @@ public class Euclidean3DSpace {
         Collections.addAll(Euclidean3DSpace.edges, edges);
     }
 
-    public static Set<Edge> getEdges() {
+    public static TreeSet<Edge> getEdges() {
         return Euclidean3DSpace.edges;
     }
 
@@ -156,6 +156,11 @@ public class Euclidean3DSpace {
         if (anyFoundPyramid.size() > 1) throw new IllegalStateException("A triangular pyramid is duplicated");
 
         return anyFoundPyramid.stream().findFirst();
+    }
+
+    public static void removeTriangularPyramid(TriangularPyramid triangularPyramid) {
+        Iterator<Point> pointIterator = triangularPyramid.getPoints().iterator();
+        Euclidean3DSpace.removeTriangularPyramid(pointIterator.next(), pointIterator.next(), pointIterator.next(), pointIterator.next());
     }
 
     public static void removeTriangularPyramid(Point point0, Point point1, Point point2, Point point3) {

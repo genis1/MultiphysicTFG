@@ -6,7 +6,9 @@ import custom.objects.dimensions2.Face;
 import custom.space.Euclidean3DSpace;
 import custom.utils.Centroid;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.TreeSet;
 
 public class TriangularPyramid extends Polyhedron {
 
@@ -55,6 +57,9 @@ public class TriangularPyramid extends Polyhedron {
         return Centroid.getFrom(this);
     }
 
+    public TreeSet<Edge> getEdges() {
+        return edges;
+    }
 
     public TreeSet<Face> getFaces() {
         return this.faces;
