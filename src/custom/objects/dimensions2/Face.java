@@ -12,8 +12,8 @@ import java.util.TreeSet;
 
 public class Face implements Comparable<Face> {
     private final TreeSet<Point> points = new TreeSet<>();
-    private final TreeSet<Edge> edges = new TreeSet<>();
-    private final TreeSet<Polyhedron> parentPolyhedra = new TreeSet<>();
+    private TreeSet<Edge> edges = new TreeSet<>();
+    private TreeSet<Polyhedron> parentPolyhedra = new TreeSet<>();
 
     /**
      * Should only by used by Euclidean3DSpace::getOrCreate*Face.
@@ -22,16 +22,17 @@ public class Face implements Comparable<Face> {
      */
     public Face(Point... points) {
 
+        //Creates a resume of points
+        for (Point point : points) {
+            this.points.add(Euclidean3DSpace.getOrCreatePoint(point));
+        }
+
         //Gets or creates edges and set edges to be related to this face.
         // It also creates a resume of edges.
         for (int i = 0; i < points.length - 1; i++) {
             this.addEdge(points[i], points[i + 1]);
         }
         this.addEdge(points[points.length - 1], points[0]);
-
-        //Creates a resume of points
-        this.edges
-                .forEach(edge -> Collections.addAll(this.points, edge.getStartPoint(), edge.getEndPoint()));
     }
 
     private void addEdge(Point point1, Point point2) {
@@ -54,6 +55,10 @@ public class Face implements Comparable<Face> {
         if (parentPolyhedra.size() > 2) throw new IllegalStateException("A face can only form part of 2 polyhedron");
     }
 
+    public TreeSet<Polyhedron> getParentPolyhedra() {
+        return parentPolyhedra;
+    }
+
     public void removeParentPolyhedron(Polyhedron polyhedron) {
         this.parentPolyhedra.remove(polyhedron);
     }
@@ -69,6 +74,16 @@ public class Face implements Comparable<Face> {
             point.print();
         }
         System.out.println("    ----    ");
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder();
+        for (Point point : this.getPoints()) {
+            string.append(point.toString());
+
+        }
+        return string.toString();
     }
 
     @Override

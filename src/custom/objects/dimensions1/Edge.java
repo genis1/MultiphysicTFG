@@ -22,19 +22,19 @@ public class Edge implements Comparable<Edge> {
 
     /**
      * Should only by used by Euclidean3DSpace::getOrCreateEdge.
-     *
+     * <p>
      * Does not have a direction.
      *
      * @param startPoint start point
-     * @param endPoint end point
+     * @param endPoint   end point
      */
     public Edge(Point startPoint, Point endPoint) {
         startPoint = Euclidean3DSpace.getOrCreatePoint(startPoint);
         endPoint = Euclidean3DSpace.getOrCreatePoint(endPoint);
-        startPoint.addAdjacentEdge(this);
-        endPoint.addAdjacentEdge(this);
         this.startPoint = startPoint;
         this.endPoint = endPoint;
+        startPoint.addAdjacentEdge(this);
+        endPoint.addAdjacentEdge(this);
         this.length = D1Utils.length(this);
     }
 
@@ -71,6 +71,15 @@ public class Edge implements Comparable<Edge> {
 
     public double getLength() {
         return this.length;
+    }
+
+    public void print() {
+        System.out.println(this.toString());
+    }
+
+    @Override
+    public String toString() {
+        return this.getStartPoint().toString() + " -> " + this.getEndPoint().toString();
     }
 
     @Override

@@ -42,12 +42,17 @@ public class Point implements Comparable<Point> {
         this.adjacentEdges.remove(edge);
     }
 
-    public TreeSet<Edge> getAdjacentFaces() {
+    public TreeSet<Edge> getAdjacentEdges() {
         return this.adjacentEdges;
     }
 
     public void print() {
-        System.out.println("(" + this.getXCoordinate() + "," + this.getYCoordinate() + "," + this.getZCoordinate() + ")");
+        System.out.println(this.toString());
+    }
+
+    @Override
+    public String toString() {
+        return "(" + this.getXCoordinate() + "," + this.getYCoordinate() + "," + this.getZCoordinate() + ")";
     }
 
     public Point add(Vector vector) {

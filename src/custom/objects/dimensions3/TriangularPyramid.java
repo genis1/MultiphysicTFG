@@ -21,6 +21,14 @@ public class TriangularPyramid extends Polyhedron {
 
         super(Type.TRIANGULAR_PYRAMID);
 
+        Collections.addAll(this.points,
+                point0,
+                Euclidean3DSpace.getOrCreatePoint(point0),
+                Euclidean3DSpace.getOrCreatePoint(point1),
+                Euclidean3DSpace.getOrCreatePoint(point2),
+                Euclidean3DSpace.getOrCreatePoint(point3)
+        );
+
         //Gets or creates faces
         Face triangularFace0 = Euclidean3DSpace.getOrCreateTriangularFace(point0, point1, point2);
         Face triangularFace1 = Euclidean3DSpace.getOrCreateTriangularFace(point1, point2, point3);
@@ -36,8 +44,6 @@ public class TriangularPyramid extends Polyhedron {
         //Creates a resume of constituents
         Collections.addAll(this.faces, triangularFace0, triangularFace1, triangularFace2, triangularFace3);
         this.faces.forEach(face -> this.edges.addAll(face.getEdges()));
-        this.edges.forEach(edge -> Collections.addAll(this.points, edge.getEndPoint(), edge.getStartPoint()));
-
     }
 
     public TreeSet<Point> getPoints() {
