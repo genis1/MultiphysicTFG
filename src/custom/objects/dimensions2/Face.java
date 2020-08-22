@@ -97,6 +97,19 @@ public class Face implements Comparable<Face> {
         }
     }
 
+    /**
+     * Before using it should be checked that the face is a square face.
+     */
+    public int compareToPoints(Point point0, Point point1, Point point2, Point point3) {
+        TreeSet<Edge> otherEdges = new TreeSet<>();
+        Collections.addAll(otherEdges,
+                Euclidean3DSpace.getOrCreateEdge(point0, point1),
+                Euclidean3DSpace.getOrCreateEdge(point1, point2),
+                Euclidean3DSpace.getOrCreateEdge(point2, point3),
+                Euclidean3DSpace.getOrCreateEdge(point3, point0));
+        return this.compareToEdges(otherEdges);
+    }
+
     private int compareToEdges(TreeSet<Edge> otherEdges) {
         Set<Edge> thisEdges = this.getEdges();
 

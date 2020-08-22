@@ -4,6 +4,7 @@ import custom.objects.dimensions0.Point;
 import custom.objects.dimensions1.Edge;
 import custom.objects.dimensions2.Face;
 import custom.objects.dimensions3.Polyhedron;
+import custom.objects.dimensions3.SquarePyramid;
 import custom.objects.dimensions3.TriangularPyramid;
 
 import java.util.*;
@@ -88,14 +89,27 @@ public class Euclidean3DSpace {
 
     public static Face getOrCreateTriangularFace(Point point0, Point point1, Point point2) {
         //Try finding it
-        Optional<Face> anyFaceFound = findFace(point0, point1, point2);
+        Optional<Face> anyFoundFace = findFace(point0, point1, point2);
 
-        return anyFaceFound
+        return anyFoundFace
                 //If face is not found create a new one
                 .orElseGet(() -> {
                     Face newTriangularFace = new Face(point0, point1, point2);
                     Euclidean3DSpace.addFaces(newTriangularFace);
                     return newTriangularFace;
+                });
+    }
+
+    public static Face getOrCreateSquareFace(Point point0, Point point1, Point point2, Point point3) {
+        //Try finding it
+        Optional<Face> anyFoundFace = findSquareFace(point0, point1, point2, point3);
+
+        return anyFoundFace
+                //If face is not found create a new one
+                .orElseGet(() -> {
+                    Face newSquareFace = new Face(point0, point1, point2, point3);
+                    Euclidean3DSpace.addFaces(newSquareFace);
+                    return newSquareFace;
                 });
     }
 
@@ -106,6 +120,15 @@ public class Euclidean3DSpace {
         Set<Face> anyFoundFace = Euclidean3DSpace.getFaces().stream()
                 .filter(existingFace -> existingFace.getNumberOfPoints() == 3)
                 .filter(existingFace -> existingFace.compareToPoints(points) == 0)
+                .collect(Collectors.toSet());
+        if (anyFoundFace.size() > 1) throw new IllegalStateException("A face is duplicated");
+        return anyFoundFace.stream().findFirst();
+    }
+
+    private static Optional<Face> findSquareFace(Point point0, Point point1, Point point2, Point point3) {
+        Set<Face> anyFoundFace = Euclidean3DSpace.getFaces().stream()
+                .filter(face -> face.getNumberOfPoints() == 4)
+                .filter(face -> face.compareToPoints(point0, point1, point2, point3) == 0)
                 .collect(Collectors.toSet());
         if (anyFoundFace.size() > 1) throw new IllegalStateException("A face is duplicated");
         return anyFoundFace.stream().findFirst();
@@ -163,10 +186,40 @@ public class Euclidean3DSpace {
         Euclidean3DSpace.removeTriangularPyramid(pointIterator.next(), pointIterator.next(), pointIterator.next(), pointIterator.next());
     }
 
+    public static SquarePyramid getOrCreateSquarePyramid(Point base0, Point base1, Point base2, Point base3, Point apex) {
+        Optional<SquarePyramid> anyFoundPyramid = findSquarePyramid(base0, base1, base2, base3, apex);
+        return anyFoundPyramid
+                //If pyramid is not found create a new one
+                .orElseGet(() -> {
+                    SquarePyramid squarePyramid = new SquarePyramid(base0, base1, base2, base3, apex);
+                    Euclidean3DSpace.addPolyhedron(squarePyramid);
+                    return squarePyramid;
+                });
+    }
+
+    private static Optional<SquarePyramid> findSquarePyramid(Point base0, Point base1, Point base2, Point base3, Point apex) {
+        List<SquarePyramid> anyFoundPyramid = Euclidean3DSpace.getPolyhedra().stream()
+                .filter(polyhedron -> polyhedron.type == Polyhedron.Type.SQUARE_PYRAMID)
+                .map(SquarePyramid.class::cast)
+                .filter(squarePyramid -> squarePyramid.compareApex(apex) == 0)
+                .filter(squarePyramid -> squarePyramid.getBase().compareToPoints(base0, base1, base2, base3) == 0)
+                .collect(Collectors.toList());
+
+        if (anyFoundPyramid.size() > 1) throw new IllegalStateException("A square pyramid is duplicated");
+
+        return anyFoundPyramid.stream().findFirst();
+    }
+
     public static void removeTriangularPyramid(Point point0, Point point1, Point point2, Point point3) {
         TriangularPyramid triangularPyramid = findTriangularPyramid(point0, point1, point2, point3).orElseThrow(() -> new IllegalArgumentException("Triangular pyramid to be removed not found"));
         Euclidean3DSpace.removePolyhedron(triangularPyramid);
         triangularPyramid.getFaces().forEach(face -> Euclidean3DSpace.removeFace(face, triangularPyramid));
+    }
+
+    public static void removeSquarePyramid(Point base0, Point base1, Point base2, Point base3, Point apex) {
+        SquarePyramid squarePyramid = findSquarePyramid(base0, base1, base2, base3, apex).orElseThrow(() -> new IllegalArgumentException("Square pyramid to be removed not found"));
+        Euclidean3DSpace.removePolyhedron(squarePyramid);
+        squarePyramid.getFaces().forEach(face -> Euclidean3DSpace.removeFace(face, squarePyramid));
     }
 
     private static void removeFace(Face face, Polyhedron polyhedron) {
