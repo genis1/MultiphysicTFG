@@ -34,7 +34,7 @@ public class E3DSAdditionSubstractionTest {
         Euclidean3DSpace.getOrCreateTriangularPyramid(planePoint0, planePoint2, positive, negative);
         Euclidean3DSpace.getOrCreateTriangularPyramid(planePoint1, planePoint2, positive, negative);
 
-        //Euclidean3DSpace.printShapes();
+        Euclidean3DSpace.printShapes();
     }
 
     private static void testElimination() {

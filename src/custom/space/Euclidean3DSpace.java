@@ -100,12 +100,12 @@ public class Euclidean3DSpace {
     }
 
     private static Optional<Face> findFace(Point point0, Point point1, Point point2) {
-        TreeSet<Point> points = new TreeSet<>();
+        List<Point> points = new ArrayList<>();
         Collections.addAll(points, point0, point1, point2);
 
         Set<Face> anyFoundFace = Euclidean3DSpace.getFaces().stream()
                 .filter(existingFace -> existingFace.getNumberOfPoints() == 3)
-                .filter(existingFace -> existingFace.compareTo(points) == 0)
+                .filter(existingFace -> existingFace.compareToPoints(points) == 0)
                 .collect(Collectors.toSet());
         if (anyFoundFace.size() > 1) throw new IllegalStateException("A face is duplicated");
         return anyFoundFace.stream().findFirst();

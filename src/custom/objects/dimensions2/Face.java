@@ -5,13 +5,13 @@ import custom.objects.dimensions1.Edge;
 import custom.objects.dimensions3.Polyhedron;
 import custom.space.Euclidean3DSpace;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
+/**
+ * The points of a face should preserve its order except for faces with only 3 points which is not important.
+ */
 public class Face implements Comparable<Face> {
-    private final TreeSet<Point> points = new TreeSet<>();
+    private final List<Point> points = new ArrayList<>();
     private TreeSet<Edge> edges = new TreeSet<>();
     private TreeSet<Polyhedron> parentPolyhedra = new TreeSet<>();
 
@@ -45,7 +45,7 @@ public class Face implements Comparable<Face> {
         return this.getPoints().size();
     }
 
-    public TreeSet<Point> getPoints() {
+    public List<Point> getPoints() {
         return points;
     }
 
@@ -64,7 +64,7 @@ public class Face implements Comparable<Face> {
     }
 
 
-    public Set<Edge> getEdges() {
+    public TreeSet<Edge> getEdges() {
         return edges;
     }
 
@@ -90,14 +90,31 @@ public class Face implements Comparable<Face> {
     public int compareTo(Face face) {
         if (this.getNumberOfPoints() != face.getNumberOfPoints()) {
             return this.getNumberOfPoints() - face.getNumberOfPoints();
+        } else if (this.getNumberOfPoints() == 3) {
+            return compareToPoints(face.getPoints());
         } else {
-
-            return compareTo(face.getPoints());
+            return compareToEdges(face.getEdges());
         }
     }
 
-    public int compareTo(TreeSet<Point> otherPoints) {
-        TreeSet<Point> thisPoints = this.getPoints();
+    private int compareToEdges(TreeSet<Edge> otherEdges) {
+        Set<Edge> thisEdges = this.getEdges();
+
+        Iterator<Edge> thisIterator = thisEdges.iterator();
+        Iterator<Edge> otherIterator = otherEdges.iterator();
+
+        while (thisIterator.hasNext()) {
+            int result = thisIterator.next().compareTo(otherIterator.next());
+            if (result != 0) return result;
+
+        }
+        return 0;
+    }
+
+    public int compareToPoints(List<Point> otherPoints) {
+        List<Point> thisPoints = this.getPoints();
+        thisPoints.sort(Point::compareTo);
+        otherPoints.sort(Point::compareTo);
 
         Iterator<Point> thisIterator = thisPoints.iterator();
         Iterator<Point> otherIterator = otherPoints.iterator();

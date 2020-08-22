@@ -18,7 +18,9 @@ public class Euclidean3DSplitterTest {
         Euclidean3DSpace.printShapes();
     }
 
+    //4400
     public static void testMultipleSplitting() {
+        long initialTime = System.currentTimeMillis();
         Euclidean3DSpace.getOrCreateTriangularPyramid(
                 new Point(0, 0, 0),
                 new Point(1, 0, 0),
@@ -26,13 +28,14 @@ public class Euclidean3DSplitterTest {
                 new Point(0, 0, 100)
         );
         Edge longestEdge = Eucliden3DSplitter.findLongestEdge();
-        while (longestEdge.getLength() > 1) {
+        while (longestEdge.getLength() > 5) {
             Eucliden3DSplitter.splitThroughEdge(longestEdge);
             longestEdge = Eucliden3DSplitter.findLongestEdge();
         }
 
-        //Euclidean3DSpace.printShapes();
+        Euclidean3DSpace.printShapes();
         System.out.println(Euclidean3DSpace.getPolyhedra().size());
+        System.out.println((System.currentTimeMillis() - initialTime) + " milliseconds");
 
     }
 }
