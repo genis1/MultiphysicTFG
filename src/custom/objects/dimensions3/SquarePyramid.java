@@ -50,6 +50,10 @@ public class SquarePyramid extends Polyhedron {
         return points;
     }
 
+    public Point getApex() {
+        return this.getPoints().get(4);
+    }
+
     public TreeSet<Edge> getEdges() {
         return edges;
     }

@@ -221,6 +221,10 @@ public class Euclidean3DSpace {
         Euclidean3DSpace.removePolyhedron(squarePyramid);
         squarePyramid.getFaces().forEach(face -> Euclidean3DSpace.removeFace(face, squarePyramid));
     }
+    public static void removeSquarePyramid(SquarePyramid squarePyramid) {
+        List<Point> points = squarePyramid.getPoints();
+        removeSquarePyramid(points.get(0),points.get(1),points.get(2),points.get(3),points.get(4));
+    }
 
     private static void removeFace(Face face, Polyhedron polyhedron) {
         face.removeParentPolyhedron(polyhedron);

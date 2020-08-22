@@ -9,12 +9,28 @@ public class Euclidean3DSplitterTest {
 
     public static void main(String[] args) {
         //testSplitting3pyramids();
-        testMultipleSplitting();
+        //testMultipleSplitting();
+        testSplitingAdjacentSquarePyramid();
     }
 
     public static void testSplitting3pyramids() {
         E3DSAdditionSubstractionTest.main(null);
         Eucliden3DSplitter.splitThroughEdge(Eucliden3DSplitter.findLongestEdge());
+        Euclidean3DSpace.printShapes();
+    }
+
+    public static void testSplitingAdjacentSquarePyramid() {
+        Point base0 = new Point(1, 1, 0);
+        Point base1 = new Point(1, -1, 0);
+        Point base2 = new Point(-1, 1, 0);
+        Point base3 = new Point(-1, -1, 0);
+        Point positive = new Point(0, 0, 1);
+        Point negative = new Point(0, 0, -1);
+
+        Euclidean3DSpace.getOrCreateSquarePyramid(base0, base1, base2, base3, positive);
+        Euclidean3DSpace.getOrCreateSquarePyramid(base0, base1, base2, base3, negative);
+
+        Eucliden3DSplitter.splitAdjacentSquarePyramids();
         Euclidean3DSpace.printShapes();
     }
 
