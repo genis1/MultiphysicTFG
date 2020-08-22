@@ -1,6 +1,7 @@
 package tests.space;
 
 import custom.objects.dimensions0.Point;
+import custom.objects.dimensions1.Vector;
 import custom.space.Euclidean3DSpace;
 
 public class E3DSAdditionSubstractionTest {
@@ -8,11 +9,13 @@ public class E3DSAdditionSubstractionTest {
         //testFaceAdjacency();
         //testEdgeAdjacency();
         //testSquareFaceAdjacency();
-        testTriangularFaceAdjacencyOfSquarePyramid();
+        //testTriangularFaceAdjacencyOfSquarePyramid();
         //testElimination();
         //testCompleteElimination();
         //testCompleteEliminationOfSquarePyramid();
         //testPartialEliminationOfSquarePyramid();
+        //testAddingTwoSquares();
+        testSubtractingSquares();
     }
 
     private static void testFaceAdjacency() {
@@ -103,7 +106,7 @@ public class E3DSAdditionSubstractionTest {
         Euclidean3DSpace.printShapes();
     }
 
-    private static void testCompleteEliminationOfSquarePyramid(){
+    private static void testCompleteEliminationOfSquarePyramid() {
         Point base0 = new Point(1, 1, 0);
         Point base1 = new Point(1, -1, 0);
         Point base2 = new Point(-1, 1, 0);
@@ -115,7 +118,8 @@ public class E3DSAdditionSubstractionTest {
 
         Euclidean3DSpace.printShapes();
     }
-    private static void testPartialEliminationOfSquarePyramid(){
+
+    private static void testPartialEliminationOfSquarePyramid() {
         Point base0 = new Point(1, 1, 0);
         Point base1 = new Point(1, -1, 0);
         Point base2 = new Point(-1, 1, 0);
@@ -126,6 +130,34 @@ public class E3DSAdditionSubstractionTest {
         Euclidean3DSpace.getOrCreateSquarePyramid(base0, base1, base2, base3, positive);
         Euclidean3DSpace.getOrCreateSquarePyramid(base0, base1, base2, base3, negative);
         Euclidean3DSpace.removeSquarePyramid(base0, base1, base2, base3, positive);
+
+        Euclidean3DSpace.printShapes();
+    }
+
+    private static void testAddingTwoSquares() {
+        Vector i = new Vector(1, 0, 0);
+        Vector j = new Vector(0, 1, 0);
+        Vector k = new Vector(0, 0, 1);
+        Point origin1 = new Point(0, 0, 0);
+        Point origin2 = new Point(1, 0, 0);
+
+        Euclidean3DSpace.getOrCreateParallelepiped(origin1, i, j, k);
+        Euclidean3DSpace.getOrCreateParallelepiped(origin2, i, j, k);
+
+        Euclidean3DSpace.printShapes();
+    }
+
+    private static void testSubtractingSquares() {
+        Vector i = new Vector(1, 0, 0);
+        Vector j = new Vector(0, 1, 0);
+        Vector k = new Vector(0, 0, 1);
+        Point origin1 = new Point(0, 0, 0);
+        Point origin2 = new Point(1, 0, 0);
+
+        Euclidean3DSpace.getOrCreateParallelepiped(origin1, i, j, k);
+        Euclidean3DSpace.getOrCreateParallelepiped(origin2, i, j, k);
+        Euclidean3DSpace.removeParallelepiped(origin2, i, j, k);
+        Euclidean3DSpace.removeParallelepiped(origin1, i, j, k);
 
         Euclidean3DSpace.printShapes();
     }

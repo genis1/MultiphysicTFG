@@ -2,6 +2,7 @@ package tests.space;
 
 import custom.objects.dimensions0.Point;
 import custom.objects.dimensions1.Edge;
+import custom.objects.dimensions1.Vector;
 import custom.space.Euclidean3DSpace;
 import custom.space.Eucliden3DSplitter;
 
@@ -10,7 +11,8 @@ public class Euclidean3DSplitterTest {
     public static void main(String[] args) {
         //testSplitting3pyramids();
         //testMultipleSplitting();
-        testSplitingAdjacentSquarePyramid();
+        //testSplitingAdjacentSquarePyramid();
+        testSplittingAdjacentSquares();
     }
 
     public static void testSplitting3pyramids() {
@@ -53,5 +55,19 @@ public class Euclidean3DSplitterTest {
         System.out.println(Euclidean3DSpace.getPolyhedra().size());
         System.out.println((System.currentTimeMillis() - initialTime) + " milliseconds");
 
+    }
+
+    public static void testSplittingAdjacentSquares(){
+        Vector i = new Vector(1, 0, 0);
+        Vector j = new Vector(0, 1, 0);
+        Vector k = new Vector(0, 0, 1);
+        Point origin1 = new Point(0, 0, 0);
+        Point origin2 = new Point(1, 0, 0);
+
+        Euclidean3DSpace.getOrCreateParallelepiped(origin1, i, j, k);
+        Euclidean3DSpace.getOrCreateParallelepiped(origin2, i, j, k);
+        Eucliden3DSplitter.splitParallelopipeds();
+
+        Euclidean3DSpace.printShapes();
     }
 }

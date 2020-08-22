@@ -3,12 +3,15 @@ package custom.space;
 import custom.objects.dimensions0.Point;
 import custom.objects.dimensions1.Edge;
 import custom.objects.dimensions2.Face;
+import custom.objects.dimensions3.Parallelepiped;
 import custom.objects.dimensions3.Polyhedron;
 import custom.objects.dimensions3.SquarePyramid;
 import custom.objects.dimensions3.TriangularPyramid;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class Eucliden3DSplitter {
@@ -98,5 +101,30 @@ public class Eucliden3DSplitter {
             Euclidean3DSpace.getOrCreateTriangularPyramid(basePoints.get(0), basePoints.get(3), basePoints.get(2), apex);
 
         }
+    }
+
+    public static void splitParallelopipeds() {
+        List<Parallelepiped> parallelepipedsToBeRemoved = Euclidean3DSpace.getPolyhedra().stream()
+                .filter(polyhedron -> polyhedron.type == Polyhedron.Type.QUADRATIC_PRISM)
+                .map(Parallelepiped.class::cast)
+                .collect(Collectors.toList());
+        parallelepipedsToBeRemoved.forEach(Eucliden3DSplitter::splitParallelopiped);
+    }
+
+    private static void splitParallelopiped(Parallelepiped parallelepiped) {
+        TreeSet<Face> faces = parallelepiped.getFaces();
+        Point centroid = parallelepiped.getCentroid();
+
+        Euclidean3DSpace.removeParallelepiped(parallelepiped);
+        faces.forEach(face -> {
+            Iterator<Point> facePointIterator = face.getPoints().iterator();
+            Euclidean3DSpace.getOrCreateSquarePyramid(
+                    facePointIterator.next(),
+                    facePointIterator.next(),
+                    facePointIterator.next(),
+                    facePointIterator.next(),
+                    centroid
+            );
+        });
     }
 }

@@ -2,7 +2,7 @@ package custom.objects.dimensions1;
 
 import custom.utils.D1Utils;
 
-public class Vector {
+public class Vector implements Comparable<Vector> {
     private final double[] coordinates;
     private final double length;
 
@@ -44,5 +44,21 @@ public class Vector {
 
     public Vector divide(double divisor) {
         return new Vector(this.getXCoordinate() / divisor, this.getYCoordinate() / divisor, this.getZCoordinate() / divisor);
+    }
+
+    @Override
+    public int compareTo(Vector o) {
+        if (this.getXCoordinate() != o.getXCoordinate()) {
+            if (this.getXCoordinate() > o.getXCoordinate()) return 1;
+            else return -1;
+        } else if (this.getYCoordinate() != o.getYCoordinate()) {
+            if (this.getYCoordinate() > o.getYCoordinate()) return 1;
+            else return -1;
+        } else if (this.getZCoordinate() != o.getZCoordinate()) {
+            if (this.getZCoordinate() > o.getZCoordinate()) return 1;
+            else return -1;
+        } else {
+            return 0;
+        }
     }
 }
