@@ -4,10 +4,7 @@ import custom.objects.dimensions0.Point;
 import custom.objects.dimensions1.Edge;
 import custom.objects.dimensions1.Vector;
 import custom.objects.dimensions2.Face;
-import custom.objects.dimensions3.Parallelepiped;
-import custom.objects.dimensions3.Polyhedron;
-import custom.objects.dimensions3.SquarePyramid;
-import custom.objects.dimensions3.TriangularPyramid;
+import custom.objects.dimensions3.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -112,7 +109,7 @@ public class Euclidean3DSpace {
 
     public static Face getOrCreateTriangularFace(Point point0, Point point1, Point point2) {
         //Try finding it
-        Optional<Face> anyFoundFace = findFace(point0, point1, point2);
+        Optional<Face> anyFoundFace = findTriangularFace(point0, point1, point2);
 
         return anyFoundFace
                 //If face is not found create a new one
@@ -123,6 +120,9 @@ public class Euclidean3DSpace {
                 });
     }
 
+    /**
+     * Points that constitute the face must be introduced ordered.
+     */
     public static Face getOrCreateSquareFace(Point point0, Point point1, Point point2, Point point3) {
         //Try finding it
         Optional<Face> anyFoundFace = findSquareFace(point0, point1, point2, point3);
@@ -136,13 +136,10 @@ public class Euclidean3DSpace {
                 });
     }
 
-    private static Optional<Face> findFace(Point point0, Point point1, Point point2) {
-        List<Point> points = new ArrayList<>();
-        Collections.addAll(points, point0, point1, point2);
-
+    private static Optional<Face> findTriangularFace(Point point0, Point point1, Point point2) {
         Set<Face> anyFoundFace = Euclidean3DSpace.getFaces().stream()
                 .filter(existingFace -> existingFace.getNumberOfPoints() == 3)
-                .filter(existingFace -> existingFace.compareToPoints(points) == 0)
+                .filter(existingFace -> existingFace.compareTriangularFaceToPoints(point0, point1, point2) == 0)
                 .collect(Collectors.toSet());
         if (anyFoundFace.size() > 1) throw new IllegalStateException("A face is duplicated");
         return anyFoundFace.stream().findFirst();
@@ -296,6 +293,40 @@ public class Euclidean3DSpace {
     public static void removeParallelepiped(Parallelepiped parallelepiped) {
         Iterator<Vector> iterator = parallelepiped.getVectors().iterator();
         removeParallelepiped(parallelepiped.getOrigin(), iterator.next(), iterator.next(), iterator.next());
+    }
+
+    //Triangular prism
+
+    public static TriangularPrism getOrCreateTriangularPrism(Point point0, Point point1, Point point2, Vector directon) {
+        Optional<TriangularPrism> anyFoundTriangularPrism = findTriangularPrism(point0, point1, point2, directon);
+        return anyFoundTriangularPrism
+                //If it is not found create a new one
+                .orElseGet(() -> {
+                    TriangularPrism triangularPrism = new TriangularPrism(point0, point1, point2, directon);
+                    Euclidean3DSpace.addPolyhedron(triangularPrism);
+                    return triangularPrism;
+                });
+    }
+
+    private static Optional<TriangularPrism> findTriangularPrism(Point point0, Point point1, Point point2, Vector directon) {
+        List<TriangularPrism> anyFoundTriangularPrism = Euclidean3DSpace.getPolyhedra().stream()
+                .filter(polyhedron -> polyhedron.type == Polyhedron.Type.TRIANGULAR_PRISM)
+                .map(TriangularPrism.class::cast)
+                .filter(triangularPrism -> triangularPrism.compareToPointsAndDirection(point0, point1, point2, directon) == 0)
+                .collect(Collectors.toList());
+        if (anyFoundTriangularPrism.size() > 1) throw new IllegalStateException("A triangular prism is duplicated");
+        return anyFoundTriangularPrism.stream().findFirst();
+    }
+
+    public static void removeTriangularPrism(Point point0, Point point1, Point point2, Vector directon) {
+        TriangularPrism triangularPrism = findTriangularPrism(point0, point1, point2, directon).orElseThrow(() -> new IllegalArgumentException("Triangular prism to be removed not found"));
+        Euclidean3DSpace.removePolyhedron(triangularPrism);
+        triangularPrism.getFaces().forEach(face -> Euclidean3DSpace.removeFace(face, triangularPrism));
+    }
+
+    public static void removeTriangularPrism(TriangularPrism triangularPrism) {
+        List<Point> points = triangularPrism.getPoints();
+        removeTriangularPrism(points.get(0), points.get(1), points.get(2), triangularPrism.getDirection());
     }
 
     //Printing

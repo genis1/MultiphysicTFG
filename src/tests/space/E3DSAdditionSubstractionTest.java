@@ -2,7 +2,9 @@ package tests.space;
 
 import custom.objects.dimensions0.Point;
 import custom.objects.dimensions1.Vector;
+import custom.objects.dimensions3.TriangularPrism;
 import custom.space.Euclidean3DSpace;
+import external.Color;
 
 public class E3DSAdditionSubstractionTest {
     public static void main(String[] args) {
@@ -15,7 +17,8 @@ public class E3DSAdditionSubstractionTest {
         //testCompleteEliminationOfSquarePyramid();
         //testPartialEliminationOfSquarePyramid();
         //testAddingTwoSquares();
-        testSubtractingSquares();
+        //testSubtractingSquares();
+        testRemovingAPrism();
     }
 
     private static void testFaceAdjacency() {
@@ -160,5 +163,40 @@ public class E3DSAdditionSubstractionTest {
         Euclidean3DSpace.removeParallelepiped(origin1, i, j, k);
 
         Euclidean3DSpace.printShapes();
+    }
+
+    private static TriangularPrism[] testAddingTwoPrism() {
+        Point pointNegative = new Point(-1, 0, 0);
+        Point pointPositive = new Point(1, 0, 0);
+        Point shared0 = new Point(0, 0, 0);
+        Point shared1 = new Point(0, 1, 0);
+        Vector direction = new Vector(1, 1, 1);
+
+        TriangularPrism prism1 = Euclidean3DSpace.getOrCreateTriangularPrism(pointNegative, shared0, shared1, direction);
+        TriangularPrism prism2 = Euclidean3DSpace.getOrCreateTriangularPrism(pointPositive, shared0, shared1, direction);
+
+        if (Euclidean3DSpace.getPoints().size() == 8 && Euclidean3DSpace.getEdges().size() == 14 && Euclidean3DSpace.getFaces().size() == 9 && Euclidean3DSpace.getPolyhedra().size() == 2) {
+            System.out.println(Color.GREEN + "Adding two prisms succeed" + Color.RED);
+        } else {
+            System.out.println(Color.RED + "Adding two prisms failed" + Color.RESET);
+        }
+        return new TriangularPrism[]{prism1, prism2};
+    }
+
+    private static void testRemovingAPrism() {
+        TriangularPrism[] triangularPrisms = testAddingTwoPrism();
+        Euclidean3DSpace.removeTriangularPrism(triangularPrisms[0]);
+        if (Euclidean3DSpace.getPoints().size() == 6 && Euclidean3DSpace.getEdges().size() == 9 && Euclidean3DSpace.getFaces().size() == 5 && Euclidean3DSpace.getPolyhedra().size() == 1) {
+            System.out.println(Color.GREEN + "Removing first prism succeed" + Color.RESET);
+        } else {
+            System.out.println(Color.RED + "Removing first prism failed" + Color.RESET);
+        }
+
+        Euclidean3DSpace.removeTriangularPrism(triangularPrisms[1]);
+        if (Euclidean3DSpace.getPoints().size() == 0 && Euclidean3DSpace.getEdges().size() == 0 && Euclidean3DSpace.getFaces().size() == 0 && Euclidean3DSpace.getPolyhedra().size() == 0) {
+            System.out.println(Color.GREEN + "Removing second prism succeed" + Color.RESET);
+        } else {
+            System.out.println(Color.RED + "Removing second prism failed" + Color.RESET);
+        }
     }
 }

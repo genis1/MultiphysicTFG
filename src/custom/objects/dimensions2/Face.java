@@ -18,7 +18,7 @@ public class Face implements Comparable<Face> {
     /**
      * Should only by used by Euclidean3DSpace::getOrCreate*Face.
      *
-     * @param points points that constituted the face, mus be introduced ordered.
+     * @param points points that constitute the face, must be introduced ordered.
      */
     public Face(Point... points) {
 
@@ -91,7 +91,7 @@ public class Face implements Comparable<Face> {
         if (this.getNumberOfPoints() != face.getNumberOfPoints()) {
             return this.getNumberOfPoints() - face.getNumberOfPoints();
         } else if (this.getNumberOfPoints() == 3) {
-            return compareToPoints(face.getPoints());
+            return compareTriangularFaceToPoints(face.getPoints());
         } else {
             return compareToEdges(face.getEdges());
         }
@@ -124,7 +124,13 @@ public class Face implements Comparable<Face> {
         return 0;
     }
 
-    public int compareToPoints(List<Point> otherPoints) {
+    public int compareTriangularFaceToPoints(Point point0, Point point1, Point point2) {
+        List<Point> points = new ArrayList<>();
+        Collections.addAll(points, point0, point1, point2);
+        return compareTriangularFaceToPoints(points);
+    }
+
+    private int compareTriangularFaceToPoints(List<Point> otherPoints) {
         List<Point> thisPoints = this.getPoints();
         thisPoints.sort(Point::compareTo);
         otherPoints.sort(Point::compareTo);

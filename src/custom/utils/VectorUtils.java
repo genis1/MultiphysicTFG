@@ -1,5 +1,6 @@
 package custom.utils;
 
+import custom.objects.dimensions0.Point;
 import custom.objects.dimensions1.Vector;
 
 public class VectorUtils {
@@ -16,5 +17,12 @@ public class VectorUtils {
         double yContribution = vector1.getYCoordinate() * vector2.getYCoordinate();
         double zContribution = vector1.getZCoordinate() * vector2.getZCoordinate();
         return xContribution + yContribution + zContribution;
+    }
+
+    public static Vector subtraction(Point point0, Point point1) {
+        return new Vector(point0.getXCoordinate() - point1.getXCoordinate(),
+                point0.getYCoordinate() - point1.getYCoordinate(),
+                point0.getZCoordinate() - point1.getZCoordinate()
+        );
     }
 }

@@ -3,10 +3,7 @@ package custom.space;
 import custom.objects.dimensions0.Point;
 import custom.objects.dimensions1.Edge;
 import custom.objects.dimensions2.Face;
-import custom.objects.dimensions3.Parallelepiped;
-import custom.objects.dimensions3.Polyhedron;
-import custom.objects.dimensions3.SquarePyramid;
-import custom.objects.dimensions3.TriangularPyramid;
+import custom.objects.dimensions3.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -15,6 +12,12 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class Eucliden3DSplitter {
+
+    public static void simplifyGrid(){
+        Eucliden3DSplitter.splitParallelopipeds();
+        Eucliden3DSplitter.splitTriangularPrisms();
+        Eucliden3DSplitter.splitAdjacentSquarePyramids();
+    }
 
     public static Edge findLongestEdge() {
         Optional<Edge> edge = Euclidean3DSpace.getEdges().stream()
@@ -126,5 +129,43 @@ public class Eucliden3DSplitter {
                     centroid
             );
         });
+    }
+
+    public static void splitTriangularPrisms() {
+        List<TriangularPrism> triangularPrisms = Euclidean3DSpace.getPolyhedra().stream()
+                .filter(polyhedron -> polyhedron.type == Polyhedron.Type.TRIANGULAR_PRISM)
+                .map(TriangularPrism.class::cast)
+                .collect(Collectors.toList());
+        triangularPrisms.forEach(Eucliden3DSplitter::splitTriangularPrism);
+    }
+
+    private static void splitTriangularPrism(TriangularPrism triangularPrism) {
+        Point centroid = triangularPrism.getCentroid();
+        TreeSet<Face> faces = triangularPrism.getFaces();
+
+        Euclidean3DSpace.removeTriangularPrism(triangularPrism);
+        faces.forEach(face -> {
+            List<Point> points = face.getPoints();
+            if (points.size() == 4) {
+                Euclidean3DSpace.getOrCreateSquarePyramid(
+                        points.get(0),
+                        points.get(1),
+                        points.get(2),
+                        points.get(3),
+                        centroid
+                );
+            } else if (points.size() == 3) {
+                Euclidean3DSpace.getOrCreateTriangularPyramid(
+                        points.get(0),
+                        points.get(1),
+                        points.get(2),
+                        centroid
+                );
+            } else {
+                throw new IllegalStateException("Face of a triangular prism isn't a triangular nor a square");
+            }
+
+        });
+
     }
 }
