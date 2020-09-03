@@ -88,14 +88,25 @@ public class TriangularPyramid extends TemperatureContainer {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         String arrayOfPoints = this.getPoints().stream().map(Point::toString)
-                .reduce((a, b) -> a + "," + b)
+                .reduce((a, b) -> a + "\t" + b)
                 .orElseThrow(() -> new IllegalStateException("Empty tetrahedron"));
         stringBuilder.append(arrayOfPoints);
-        stringBuilder.append(",");
+        stringBuilder.append("\t");
         stringBuilder.append(this.getMaterial());
-        stringBuilder.append(",");
+        stringBuilder.append("\t");
         stringBuilder.append(this.getTemperature());
         return stringBuilder.toString();
+    }
+
+    public static TriangularPyramid parse(String string) {
+        String[] split = string.split("\t");
+        Point point0 = Point.parse(split[0]);
+        Point point1 = Point.parse(split[1]);
+        Point point2 = Point.parse(split[2]);
+        Point point3 = Point.parse(split[3]);
+        Materials.TemperatureDiffusion material = Materials.TemperatureDiffusion.valueOf(split[4]);
+        double temperature = Double.parseDouble(split[5]);
+        return Euclidean3DSpace.getOrCreateTriangularPyramid(point0, point1, point2, point3, material, temperature);
     }
 
     @Override

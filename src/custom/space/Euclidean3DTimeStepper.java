@@ -24,5 +24,6 @@ public class Euclidean3DTimeStepper {
     public static void computeTimeStep() {
         Euclidean3DSpace.getFaces().forEach(TemperatureInterface::addHeatTransferedToParentPolyehdra);
         Euclidean3DSpace.getPolyhedra().forEach(temperatureContainer -> temperatureContainer.computeNewTemperature(Euclidean3DTimeStepper.getTimeStep()));
+        time = Euclidean3DTimeStepper.getTime() + Euclidean3DTimeStepper.getTimeStep();
     }
 }

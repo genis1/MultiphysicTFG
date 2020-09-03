@@ -3,6 +3,7 @@ package custom.objects.dimensions0;
 import custom.objects.dimensions1.Edge;
 import custom.objects.dimensions1.Vector;
 
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 public class Point implements Comparable<Point> {
@@ -53,6 +54,24 @@ public class Point implements Comparable<Point> {
     @Override
     public String toString() {
         return "(" + this.getXCoordinate() + "," + this.getYCoordinate() + "," + this.getZCoordinate() + ")";
+    }
+
+    public static Point parse(String string) {
+        ArrayList<Double> coordinates = new ArrayList<>();
+
+        char[] chars = string.toCharArray();
+        int start = 0;
+        int end;
+        for (int i = 0; i < chars.length; i++) {
+            char aChar = chars[i];
+            if (aChar == '(') start = i;
+            else if (aChar == ',' || aChar == ')') {
+                end = i;
+                coordinates.add(Double.parseDouble(string.substring(start + 1, end)));
+                start = end;
+            }
+        }
+        return new Point(coordinates.get(0), coordinates.get(1), coordinates.get(2));
     }
 
     public Point add(Vector vector) {
