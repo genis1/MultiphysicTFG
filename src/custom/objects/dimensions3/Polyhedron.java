@@ -1,11 +1,21 @@
 package custom.objects.dimensions3;
 
+import custom.objects.temperature.diffusion.TemperatureInterface;
+
+import java.util.TreeSet;
+
 public abstract class Polyhedron implements Comparable<Polyhedron> {
 
     public final Type type;
 
+    private final TreeSet<TemperatureInterface> faces = new TreeSet<>();
+
     protected Polyhedron(Type type) {
         this.type = type;
+    }
+
+    public TreeSet<TemperatureInterface> getFaces() {
+        return faces;
     }
 
     public abstract int getNumberOfPoints();
@@ -14,6 +24,7 @@ public abstract class Polyhedron implements Comparable<Polyhedron> {
 
     public abstract void print();
 
+    public abstract double getVolume();
 
     public enum Type {
         TRIANGULAR_PYRAMID(1),

@@ -7,7 +7,7 @@ public class VectorUtils {
 
     public static Vector crossProduct(Vector vector1, Vector vector2) {
         double xCoordinate = vector1.getYCoordinate() * vector2.getZCoordinate() - vector1.getZCoordinate() * vector2.getYCoordinate();
-        double yCoordinate = vector1.getXCoordinate() * vector2.getZCoordinate() - vector1.getZCoordinate() * vector2.getXCoordinate();
+        double yCoordinate = vector1.getZCoordinate() * vector2.getXCoordinate() - vector1.getXCoordinate() * vector2.getZCoordinate();
         double zCoordinate = vector1.getXCoordinate() * vector2.getYCoordinate() - vector1.getYCoordinate() * vector2.getXCoordinate();
         return new Vector(xCoordinate, yCoordinate, zCoordinate);
     }
@@ -17,6 +17,10 @@ public class VectorUtils {
         double yContribution = vector1.getYCoordinate() * vector2.getYCoordinate();
         double zContribution = vector1.getZCoordinate() * vector2.getZCoordinate();
         return xContribution + yContribution + zContribution;
+    }
+
+    public static double determinant(Vector vector0, Vector vector1, Vector vector2) {
+        return VectorUtils.dotProduct(vector0, VectorUtils.crossProduct(vector1, vector2));
     }
 
     public static Vector subtraction(Point point0, Point point1) {

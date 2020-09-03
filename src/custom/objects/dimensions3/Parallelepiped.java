@@ -3,7 +3,9 @@ package custom.objects.dimensions3;
 import custom.objects.dimensions0.Point;
 import custom.objects.dimensions1.Edge;
 import custom.objects.dimensions1.Vector;
-import custom.objects.dimensions2.Face;
+import custom.objects.temperature.diffusion.Materials;
+import custom.objects.temperature.diffusion.TemperatureContainer;
+import custom.objects.temperature.diffusion.TemperatureInterface;
 import custom.space.Euclidean3DSpace;
 import custom.utils.VectorUtils;
 
@@ -12,17 +14,16 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Parallelepiped extends Polyhedron {
+public class Parallelepiped extends TemperatureContainer {
 
     private final TreeSet<Point> points = new TreeSet<>();
     private final TreeSet<Edge> edges = new TreeSet<>();
-    private final TreeSet<Face> faces = new TreeSet<>();
     private final TreeSet<Vector> vectors = new TreeSet<>();
     private final Point origin;
 
 
-    public Parallelepiped(Point origin, Vector direction1, Vector direction2, Vector direction3) {
-        super(Type.QUADRATIC_PRISM);
+    public Parallelepiped(Point origin, Vector direction1, Vector direction2, Vector direction3, Materials.TemperatureDiffusion material, double temperature) {
+        super(Type.QUADRATIC_PRISM, material, temperature);
 
         //Directions
         Collections.addAll(this.vectors, direction1, direction2, direction3);
@@ -49,13 +50,13 @@ public class Parallelepiped extends Polyhedron {
         );
 
         //Faces
-        Face base = Euclidean3DSpace.getOrCreateSquareFace(point000, point001, point011, point010);
-        Face top = Euclidean3DSpace.getOrCreateSquareFace(point100, point101, point111, point110);
-        Face xPositive = Euclidean3DSpace.getOrCreateSquareFace(point001, point101, point111, point011);
-        Face xNegative = Euclidean3DSpace.getOrCreateSquareFace(point000, point100, point110, point010);
-        Face yPositive = Euclidean3DSpace.getOrCreateSquareFace(point010, point110, point111, point011);
-        Face yNegative = Euclidean3DSpace.getOrCreateSquareFace(point000, point100, point101, point001);
-        Collections.addAll(this.faces, base, top, xNegative, xPositive, yNegative, yPositive);
+        TemperatureInterface base = Euclidean3DSpace.getOrCreateSquareFace(point000, point001, point011, point010);
+        TemperatureInterface top = Euclidean3DSpace.getOrCreateSquareFace(point100, point101, point111, point110);
+        TemperatureInterface xPositive = Euclidean3DSpace.getOrCreateSquareFace(point001, point101, point111, point011);
+        TemperatureInterface xNegative = Euclidean3DSpace.getOrCreateSquareFace(point000, point100, point110, point010);
+        TemperatureInterface yPositive = Euclidean3DSpace.getOrCreateSquareFace(point010, point110, point111, point011);
+        TemperatureInterface yNegative = Euclidean3DSpace.getOrCreateSquareFace(point000, point100, point101, point001);
+        Collections.addAll(this.getFaces(), base, top, xNegative, xPositive, yNegative, yPositive);
 
         base.addParentPolyhedron(this);
         top.addParentPolyhedron(this);
@@ -65,7 +66,7 @@ public class Parallelepiped extends Polyhedron {
         xPositive.addParentPolyhedron(this);
 
         //Edges
-        this.faces.forEach(face -> this.edges.addAll(face.getEdges()));
+        this.getFaces().forEach(face -> this.edges.addAll(face.getEdges()));
     }
 
     public double getVolume() {
@@ -81,7 +82,7 @@ public class Parallelepiped extends Polyhedron {
      * @param vector2 vector2
      * @return volume
      */
-    public static double computeVolume(Vector vector0, Vector vector1, Vector vector2) {
+    private static double computeVolume(Vector vector0, Vector vector1, Vector vector2) {
         Vector areaVector = VectorUtils.crossProduct(vector0, vector1);
         double volume = VectorUtils.dotProduct(areaVector, vector2);
         return Math.abs(volume);
@@ -101,10 +102,6 @@ public class Parallelepiped extends Polyhedron {
 
     public TreeSet<Vector> getVectors() {
         return vectors;
-    }
-
-    public TreeSet<Face> getFaces() {
-        return faces;
     }
 
     @Override

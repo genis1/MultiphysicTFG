@@ -2,22 +2,27 @@ package custom.objects.dimensions3;
 
 import custom.objects.dimensions0.Point;
 import custom.objects.dimensions1.Edge;
-import custom.objects.dimensions2.Face;
+import custom.objects.temperature.diffusion.Materials;
+import custom.objects.temperature.diffusion.TemperatureContainer;
+import custom.objects.temperature.diffusion.TemperatureInterface;
 import custom.space.Euclidean3DSpace;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.TreeSet;
 
-public class SquarePyramid extends Polyhedron {
+public class SquarePyramid extends TemperatureContainer {
 
     /**
      * The first 4 points conform the base, in order, and the last one the apex.
      */
     private final List<Point> points = new ArrayList<>();
     private final TreeSet<Edge> edges = new TreeSet<>();
-    private final TreeSet<Face> faces = new TreeSet<>();
 
-    public SquarePyramid(Point point0, Point point1, Point point2, Point point3, Point apex) {
-        super(Type.SQUARE_PYRAMID);
+    public SquarePyramid(Point point0, Point point1, Point point2, Point point3, Point apex, Materials.TemperatureDiffusion material, double temperature) {
+        super(Type.SQUARE_PYRAMID, material, temperature);
 
         Collections.addAll(this.points,
                 Euclidean3DSpace.getOrCreatePoint(point0),
@@ -28,12 +33,12 @@ public class SquarePyramid extends Polyhedron {
         );
 
         //Gets or creates faces
-        Face base = Euclidean3DSpace.getOrCreateSquareFace(point0, point1, point2, point3);
-        Face triangularFace0 = Euclidean3DSpace.getOrCreateTriangularFace(point0, point1, apex);
-        Face triangularFace1 = Euclidean3DSpace.getOrCreateTriangularFace(point1, point2, apex);
-        Face triangularFace2 = Euclidean3DSpace.getOrCreateTriangularFace(point2, point3, apex);
-        Face triangularFace3 = Euclidean3DSpace.getOrCreateTriangularFace(point3, point0, apex);
-        Collections.addAll(this.faces, base, triangularFace0, triangularFace1, triangularFace2, triangularFace3);
+        TemperatureInterface base = Euclidean3DSpace.getOrCreateSquareFace(point0, point1, point2, point3);
+        TemperatureInterface triangularFace0 = Euclidean3DSpace.getOrCreateTriangularFace(point0, point1, apex);
+        TemperatureInterface triangularFace1 = Euclidean3DSpace.getOrCreateTriangularFace(point1, point2, apex);
+        TemperatureInterface triangularFace2 = Euclidean3DSpace.getOrCreateTriangularFace(point2, point3, apex);
+        TemperatureInterface triangularFace3 = Euclidean3DSpace.getOrCreateTriangularFace(point3, point0, apex);
+        Collections.addAll(this.getFaces(), base, triangularFace0, triangularFace1, triangularFace2, triangularFace3);
 
         //Set faces to be related to this polyhedron
         base.addParentPolyhedron(this);
@@ -43,7 +48,7 @@ public class SquarePyramid extends Polyhedron {
         triangularFace3.addParentPolyhedron(this);
 
         //Creates a resume of constituents
-        this.faces.forEach(face -> this.edges.addAll(face.getEdges()));
+        this.getFaces().forEach(face -> this.edges.addAll(face.getEdges()));
     }
 
     public List<Point> getPoints() {
@@ -56,10 +61,6 @@ public class SquarePyramid extends Polyhedron {
 
     public TreeSet<Edge> getEdges() {
         return edges;
-    }
-
-    public TreeSet<Face> getFaces() {
-        return faces;
     }
 
     @Override
@@ -102,15 +103,15 @@ public class SquarePyramid extends Polyhedron {
             int apexComparision = compareApex(otherApex);
             if (apexComparision != 0) return apexComparision;
             else {
-                Face thisBase = this.getBase();
-                Face otherBase = otherSquarePyramid.getBase();
+                TemperatureInterface thisBase = this.getBase();
+                TemperatureInterface otherBase = otherSquarePyramid.getBase();
 
                 return thisBase.compareTo(otherBase);
             }
         }
     }
 
-    public Face getBase() {
+    public TemperatureInterface getBase() {
         return this.getFaces().stream()
                 .filter(face -> face.getNumberOfPoints() == 4)
                 .findFirst().orElseThrow(() -> new IllegalStateException("Found squre pyrmaid without base"));
@@ -118,5 +119,10 @@ public class SquarePyramid extends Polyhedron {
 
     public int compareApex(Point otherApex) {
         return this.points.get(4).compareTo(otherApex);
+    }
+
+    @Override
+    public double getVolume() {
+        throw new NotImplementedException();
     }
 }

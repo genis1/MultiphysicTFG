@@ -4,19 +4,33 @@ import custom.objects.dimensions0.Point;
 import custom.objects.dimensions1.Edge;
 import custom.objects.dimensions2.Face;
 import custom.objects.dimensions3.*;
+import custom.objects.temperature.diffusion.TemperatureInterface;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class Eucliden3DSplitter {
+public class Euclidean3DSplitter {
 
-    public static void simplifyGrid(){
-        Eucliden3DSplitter.splitParallelopipeds();
-        Eucliden3DSplitter.splitTriangularPrisms();
-        Eucliden3DSplitter.splitAdjacentSquarePyramids();
+    public static void simplifyGrid() {
+        Euclidean3DSplitter.splitParallelopipeds();
+        Euclidean3DSplitter.splitTriangularPrisms();
+        Euclidean3DSplitter.splitAdjacentSquarePyramids();
+    }
+
+    public static void splitLongestEdges(int i) {
+        findLongestEdges(i).forEach(Euclidean3DSplitter::splitThroughEdge);
+    }
+
+    private static Collection<Edge> findLongestEdges(int i) {
+        return Euclidean3DSpace.getEdges().stream()
+                .sorted((edge0, edge1) -> {
+                    double edgeDifference = edge0.getLength() - edge1.getLength();
+                    if (edgeDifference > 0) return 1;
+                    else if (edgeDifference < 0) return -1;
+                    else return 0;
+                })
+                .limit(i)
+                .collect(Collectors.toList());
     }
 
     public static Edge findLongestEdge() {
@@ -47,27 +61,28 @@ public class Eucliden3DSplitter {
                 .distinct()
                 .collect(Collectors.toList());
 
-        List<Edge> edgesForNewPolyhedra = triangularPyramidsToRemove.stream()
-                .flatMap(triangularPyramid -> triangularPyramid.getEdges().stream())
-                .distinct()
-                //Extract contorn edges to be used in creating the splitted triangular pyramids
-                .filter(edge1 -> edge1.getStartPoint() != edge.getEndPoint()
-                        && edge1.getStartPoint() != edge.getStartPoint()
-                        && edge1.getEndPoint() != edge.getEndPoint()
-                        && edge1.getEndPoint() != edge.getStartPoint())
-                //.map(edge1 -> new Point[]{edge1.getStartPoint(), edge1.getEndPoint()})
-                .collect(Collectors.toList());
+        TreeMap<Edge, TriangularPyramid> edgeTriangularPyramidTreeMap = new TreeMap<>();
+        triangularPyramidsToRemove
+                .forEach(triangularPyramid -> {
+                    Edge edgeForNewPolyhedra = triangularPyramid.getEdges().stream()
+                            .filter(edge1 -> edge1.getStartPoint() != edge.getEndPoint()
+                                    && edge1.getStartPoint() != edge.getStartPoint()
+                                    && edge1.getEndPoint() != edge.getEndPoint()
+                                    && edge1.getEndPoint() != edge.getStartPoint())
+                            .findFirst().orElseThrow(() -> new IllegalAccessError("Edge of polyhedranot found"));
+
+                    edgeTriangularPyramidTreeMap.put(edgeForNewPolyhedra, triangularPyramid);
+                });
 
 
         //Remove old pyramids
         triangularPyramidsToRemove.forEach(Euclidean3DSpace::removeTriangularPyramid);
 
         //Add new pyramids
-        edgesForNewPolyhedra
-                .forEach(edge1 -> {
-                    Euclidean3DSpace.getOrCreateTriangularPyramid(edge1.getStartPoint(), edge1.getEndPoint(), centroid, edge.getStartPoint());
-                    Euclidean3DSpace.getOrCreateTriangularPyramid(edge1.getStartPoint(), edge1.getEndPoint(), centroid, edge.getEndPoint());
-                });
+        edgeTriangularPyramidTreeMap.forEach((edge1, triangularPyramid) -> {
+            Euclidean3DSpace.getOrCreateTriangularPyramid(edge1.getStartPoint(), edge1.getEndPoint(), centroid, edge.getStartPoint(), triangularPyramid.getMaterial(), triangularPyramid.getTemperature());
+            Euclidean3DSpace.getOrCreateTriangularPyramid(edge1.getStartPoint(), edge1.getEndPoint(), centroid, edge.getEndPoint(), triangularPyramid.getMaterial(), triangularPyramid.getTemperature());
+        });
     }
 
     /**
@@ -79,31 +94,26 @@ public class Eucliden3DSplitter {
                 .collect(Collectors.toList());
         //Splitted to avoid concurrent modifications
         facesToBeRemoved
-                .forEach(Eucliden3DSplitter::splitAdjacentSquarePyramid);
+                .forEach(Euclidean3DSplitter::splitAdjacentSquarePyramid);
     }
 
     private static void splitAdjacentSquarePyramid(Face face) {
         List<Point> basePoints = face.getPoints();
 
-        List<SquarePyramid> pyramidsToBeRemoved = face.getParentPolyhedra().stream()
+        face.getParentPolyhedra().stream()
                 .map(polyhedron -> {
                     if (polyhedron.type != Polyhedron.Type.SQUARE_PYRAMID)
                         throw new IllegalStateException("Space is containing strange solids");
                     return SquarePyramid.class.cast(polyhedron);
                 })
-                .collect(Collectors.toList());
-        List<Point> apexs = pyramidsToBeRemoved.stream()
-                .map(SquarePyramid::getApex)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                .forEach(squarePyramid -> {
+                    Euclidean3DSpace.removeSquarePyramid(squarePyramid);
+                    Point apex = squarePyramid.getApex();
+                    Euclidean3DSpace.getOrCreateTriangularPyramid(basePoints.get(0), basePoints.get(1), basePoints.get(2), apex, squarePyramid.getMaterial(), squarePyramid.getTemperature());
+                    Euclidean3DSpace.getOrCreateTriangularPyramid(basePoints.get(0), basePoints.get(3), basePoints.get(2), apex, squarePyramid.getMaterial(), squarePyramid.getTemperature());
+                });
 
-        for (SquarePyramid aPyramidsToBeRemoved : pyramidsToBeRemoved) {
-            Euclidean3DSpace.removeSquarePyramid(aPyramidsToBeRemoved);
-        }
-        for (Point apex : apexs) {
-            Euclidean3DSpace.getOrCreateTriangularPyramid(basePoints.get(0), basePoints.get(1), basePoints.get(2), apex);
-            Euclidean3DSpace.getOrCreateTriangularPyramid(basePoints.get(0), basePoints.get(3), basePoints.get(2), apex);
-
-        }
     }
 
     public static void splitParallelopipeds() {
@@ -111,11 +121,11 @@ public class Eucliden3DSplitter {
                 .filter(polyhedron -> polyhedron.type == Polyhedron.Type.QUADRATIC_PRISM)
                 .map(Parallelepiped.class::cast)
                 .collect(Collectors.toList());
-        parallelepipedsToBeRemoved.forEach(Eucliden3DSplitter::splitParallelopiped);
+        parallelepipedsToBeRemoved.forEach(Euclidean3DSplitter::splitParallelopiped);
     }
 
     private static void splitParallelopiped(Parallelepiped parallelepiped) {
-        TreeSet<Face> faces = parallelepiped.getFaces();
+        TreeSet<TemperatureInterface> faces = parallelepiped.getFaces();
         Point centroid = parallelepiped.getCentroid();
 
         Euclidean3DSpace.removeParallelepiped(parallelepiped);
@@ -126,7 +136,9 @@ public class Eucliden3DSplitter {
                     facePointIterator.next(),
                     facePointIterator.next(),
                     facePointIterator.next(),
-                    centroid
+                    centroid,
+                    parallelepiped.getMaterial(),
+                    parallelepiped.getTemperature()
             );
         });
     }
@@ -136,12 +148,12 @@ public class Eucliden3DSplitter {
                 .filter(polyhedron -> polyhedron.type == Polyhedron.Type.TRIANGULAR_PRISM)
                 .map(TriangularPrism.class::cast)
                 .collect(Collectors.toList());
-        triangularPrisms.forEach(Eucliden3DSplitter::splitTriangularPrism);
+        triangularPrisms.forEach(Euclidean3DSplitter::splitTriangularPrism);
     }
 
     private static void splitTriangularPrism(TriangularPrism triangularPrism) {
         Point centroid = triangularPrism.getCentroid();
-        TreeSet<Face> faces = triangularPrism.getFaces();
+        TreeSet<TemperatureInterface> faces = triangularPrism.getFaces();
 
         Euclidean3DSpace.removeTriangularPrism(triangularPrism);
         faces.forEach(face -> {
@@ -152,14 +164,18 @@ public class Eucliden3DSplitter {
                         points.get(1),
                         points.get(2),
                         points.get(3),
-                        centroid
+                        centroid,
+                        triangularPrism.getMaterial(),
+                        triangularPrism.getTemperature()
                 );
             } else if (points.size() == 3) {
                 Euclidean3DSpace.getOrCreateTriangularPyramid(
                         points.get(0),
                         points.get(1),
                         points.get(2),
-                        centroid
+                        centroid,
+                        triangularPrism.getMaterial(),
+                        triangularPrism.getTemperature()
                 );
             } else {
                 throw new IllegalStateException("Face of a triangular prism isn't a triangular nor a square");

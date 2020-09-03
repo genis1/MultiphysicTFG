@@ -3,9 +3,12 @@ package custom.objects.dimensions3;
 import custom.objects.dimensions0.Point;
 import custom.objects.dimensions1.Edge;
 import custom.objects.dimensions1.Vector;
-import custom.objects.dimensions2.Face;
+import custom.objects.temperature.diffusion.Materials;
+import custom.objects.temperature.diffusion.TemperatureContainer;
+import custom.objects.temperature.diffusion.TemperatureInterface;
 import custom.space.Euclidean3DSpace;
 import custom.utils.VectorUtils;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,14 +16,13 @@ import java.util.stream.Collectors;
 /**
  * Points are ordered first the 3 points of the base and then the 3 of the top.
  */
-public class TriangularPrism extends Polyhedron {
+public class TriangularPrism extends TemperatureContainer {
 
     private final List<Point> points = new ArrayList<>();
     private final TreeSet<Edge> edges = new TreeSet<>();
-    private final TreeSet<Face> faces = new TreeSet<>();
 
-    public TriangularPrism(Point point0, Point point1, Point point2, Vector direction) {
-        super(Type.TRIANGULAR_PRISM);
+    public TriangularPrism(Point point0, Point point1, Point point2, Vector direction, Materials.TemperatureDiffusion material, double temperature) {
+        super(Type.TRIANGULAR_PRISM, material, temperature);
 
         //Points
         Collections.addAll(points,
@@ -33,33 +35,33 @@ public class TriangularPrism extends Polyhedron {
         );
 
         //Faces
-        Face base = Euclidean3DSpace.getOrCreateTriangularFace(
+        TemperatureInterface base = Euclidean3DSpace.getOrCreateTriangularFace(
                 points.get(0),
                 points.get(1),
                 points.get(2));
-        Face top = Euclidean3DSpace.getOrCreateTriangularFace(
+        TemperatureInterface top = Euclidean3DSpace.getOrCreateTriangularFace(
                 points.get(3),
                 points.get(4),
                 points.get(5));
-        Face lateralFace0 = Euclidean3DSpace.getOrCreateSquareFace(
+        TemperatureInterface lateralFace0 = Euclidean3DSpace.getOrCreateSquareFace(
                 points.get(0),
                 points.get(1),
                 points.get(4),
                 points.get(3)
         );
-        Face lateralFace1 = Euclidean3DSpace.getOrCreateSquareFace(
+        TemperatureInterface lateralFace1 = Euclidean3DSpace.getOrCreateSquareFace(
                 points.get(1),
                 points.get(2),
                 points.get(5),
                 points.get(4)
         );
-        Face lateralFace2 = Euclidean3DSpace.getOrCreateSquareFace(
+        TemperatureInterface lateralFace2 = Euclidean3DSpace.getOrCreateSquareFace(
                 points.get(2),
                 points.get(0),
                 points.get(3),
                 points.get(5)
         );
-        Collections.addAll(this.faces, base, top, lateralFace0, lateralFace1, lateralFace2);
+        Collections.addAll(this.getFaces(), base, top, lateralFace0, lateralFace1, lateralFace2);
 
         //Set faces to be related to this polyhedron
         base.addParentPolyhedron(this);
@@ -69,7 +71,7 @@ public class TriangularPrism extends Polyhedron {
         lateralFace2.addParentPolyhedron(this);
 
         //Creates a resume of constituents
-        this.faces.forEach(face -> this.edges.addAll(face.getEdges()));
+        this.getFaces().forEach(face -> this.edges.addAll(face.getEdges()));
     }
 
     public List<Point> getPoints() {
@@ -80,16 +82,12 @@ public class TriangularPrism extends Polyhedron {
         return edges;
     }
 
-    public TreeSet<Face> getFaces() {
-        return faces;
-    }
-
     public Vector getDirection() {
         List<Point> thisPoints = this.getPoints();
         return VectorUtils.subtraction(thisPoints.get(3), thisPoints.get(0));
     }
 
-    public List<Face> getBaseAndTop() {
+    public List<TemperatureInterface> getBaseAndTop() {
         return getFaces().stream()
                 .filter(face -> face.getNumberOfPoints() == 3)
                 .sorted()
@@ -221,5 +219,10 @@ public class TriangularPrism extends Polyhedron {
                 .reduce((aDouble, aDouble2) -> aDouble + aDouble2)
                 .orElseThrow(() -> new IllegalStateException("Empty triangular prism"));
         return new Point(sumX / 6, sumY / 6, sumZ / 6);
+    }
+
+    @Override
+    public double getVolume() {
+        throw new NotImplementedException();
     }
 }

@@ -4,8 +4,9 @@ import custom.objects.dimensions0.Point;
 import custom.objects.dimensions1.Vector;
 import custom.objects.dimensions3.Parallelepiped;
 import custom.space.Euclidean3DSpace;
+import tests.utils.ConstantUtils;
 
-public class ParallelopipedTest {
+public class ParallelopipedTest extends ConstantUtils {
     public static void main(String[] args) {
         testParallelopipedComparision();
     }
@@ -17,7 +18,7 @@ public class ParallelopipedTest {
         Point origin1 = new Point(0, 0, 0);
 
 
-        Parallelepiped parallelepiped = Euclidean3DSpace.getOrCreateParallelepiped(origin1, i, j, k);
+        Parallelepiped parallelepiped = Euclidean3DSpace.getOrCreateParallelepiped(origin1, i, j, k,material,temperature);
         System.out.println(parallelepiped.compareToOriginAndVectors(origin1, i, j, k));
 
     }

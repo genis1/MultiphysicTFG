@@ -5,11 +5,17 @@ import custom.objects.dimensions1.Edge;
 import custom.objects.dimensions1.Vector;
 import custom.objects.dimensions3.Polyhedron;
 import custom.objects.dimensions3.TriangularPrism;
+import custom.objects.dimensions3.TriangularPyramid;
+import custom.objects.temperature.diffusion.TemperatureContainer;
 import custom.space.Euclidean3DSpace;
-import custom.space.Eucliden3DSplitter;
+import custom.space.Euclidean3DSplitter;
 import external.Color;
+import tests.utils.ConstantUtils;
 
-public class Euclidean3DSplitterTest {
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class Euclidean3DSplitterTest extends ConstantUtils {
 
     public static void main(String[] args) {
         //testSplitting3pyramids();
@@ -17,11 +23,12 @@ public class Euclidean3DSplitterTest {
         //testSplitingAdjacentSquarePyramid();
         //testSplittingAdjacentSquares();
         testSplittingAdjacentTriangularPrisms();
+        testSplittingMantainsMaterial();
     }
 
     public static void testSplitting3pyramids() {
         E3DSAdditionSubstractionTest.main(null);
-        Eucliden3DSplitter.splitThroughEdge(Eucliden3DSplitter.findLongestEdge());
+        Euclidean3DSplitter.splitThroughEdge(Euclidean3DSplitter.findLongestEdge());
         Euclidean3DSpace.printShapes();
     }
 
@@ -33,10 +40,10 @@ public class Euclidean3DSplitterTest {
         Point positive = new Point(0, 0, 1);
         Point negative = new Point(0, 0, -1);
 
-        Euclidean3DSpace.getOrCreateSquarePyramid(base0, base1, base2, base3, positive);
-        Euclidean3DSpace.getOrCreateSquarePyramid(base0, base1, base2, base3, negative);
+        Euclidean3DSpace.getOrCreateSquarePyramid(base0, base1, base2, base3, positive, material, temperature);
+        Euclidean3DSpace.getOrCreateSquarePyramid(base0, base1, base2, base3, negative, material, temperature);
 
-        Eucliden3DSplitter.splitAdjacentSquarePyramids();
+        Euclidean3DSplitter.splitAdjacentSquarePyramids();
         Euclidean3DSpace.printShapes();
     }
 
@@ -47,12 +54,13 @@ public class Euclidean3DSplitterTest {
                 new Point(0, 0, 0),
                 new Point(1, 0, 0),
                 new Point(0, 1, 0),
-                new Point(0, 0, 100)
+                new Point(0, 0, 100),
+                material, temperature
         );
-        Edge longestEdge = Eucliden3DSplitter.findLongestEdge();
+        Edge longestEdge = Euclidean3DSplitter.findLongestEdge();
         while (longestEdge.getLength() > 5) {
-            Eucliden3DSplitter.splitThroughEdge(longestEdge);
-            longestEdge = Eucliden3DSplitter.findLongestEdge();
+            Euclidean3DSplitter.splitThroughEdge(longestEdge);
+            longestEdge = Euclidean3DSplitter.findLongestEdge();
         }
 
         Euclidean3DSpace.printShapes();
@@ -68,9 +76,9 @@ public class Euclidean3DSplitterTest {
         Point origin1 = new Point(0, 0, 0);
         Point origin2 = new Point(1, 0, 0);
 
-        Euclidean3DSpace.getOrCreateParallelepiped(origin1, i, j, k);
-        Euclidean3DSpace.getOrCreateParallelepiped(origin2, i, j, k);
-        Eucliden3DSplitter.splitParallelopipeds();
+        Euclidean3DSpace.getOrCreateParallelepiped(origin1, i, j, k, material, temperature);
+        Euclidean3DSpace.getOrCreateParallelepiped(origin2, i, j, k, material, temperature);
+        Euclidean3DSplitter.splitParallelopipeds();
 
         Euclidean3DSpace.printShapes();
     }
@@ -82,10 +90,10 @@ public class Euclidean3DSplitterTest {
         Point shared1 = new Point(0, 1, 0);
         Vector direction = new Vector(1, 1, 1);
 
-        TriangularPrism prism1 = Euclidean3DSpace.getOrCreateTriangularPrism(pointNegative, shared0, shared1, direction);
-        TriangularPrism prism2 = Euclidean3DSpace.getOrCreateTriangularPrism(pointPositive, shared0, shared1, direction);
+        TriangularPrism prism1 = Euclidean3DSpace.getOrCreateTriangularPrism(pointNegative, shared0, shared1, direction, material, temperature);
+        TriangularPrism prism2 = Euclidean3DSpace.getOrCreateTriangularPrism(pointPositive, shared0, shared1, direction, material, temperature);
 
-        Eucliden3DSplitter.splitTriangularPrisms();
+        Euclidean3DSplitter.splitTriangularPrisms();
 
         boolean numberOfPolyhedraCorrect = Euclidean3DSpace.getPolyhedra().size() == 10;
         boolean numberOfFacesCorrect = Euclidean3DSpace.getFaces().size() == 27;
@@ -99,5 +107,54 @@ public class Euclidean3DSplitterTest {
             System.out.println(Color.RED + "Adjacent triangular prisms failed to split" + Color.RESET);
 
         }
+    }
+
+    private static void testSplittingMantainsMaterial() {
+        Point point0 = new Point(0, 0, 0);
+        Point pointY = new Point(0, 1, 0);
+        Point pointX = new Point(1, 0, 0);
+        Point pointXY = new Point(1, 1, 0);
+        Point pointZ = new Point(0, 0, 1);
+        Vector vectorY = new Vector(0, 1, 0);
+        Vector vectorX = new Vector(1, 0, 0);
+        Vector vectorZ = new Vector(0, 0, 1);
+
+        TriangularPyramid triangularPyramid = Euclidean3DSpace.getOrCreateTriangularPyramid(point0, pointX, pointY, pointZ, material, temperature);
+        Euclidean3DSplitter.splitThroughEdge(triangularPyramid.getEdges().first());
+        List<TemperatureContainer> wrongPolyhedra = Euclidean3DSpace.getPolyhedra().stream()
+                .filter(polyhedra -> polyhedra.getTemperature() != temperature || polyhedra.getMaterial() != material)
+                .collect(Collectors.toList());
+        if (wrongPolyhedra.size() == 0) {
+            System.out.println(Color.GREEN + "Edge splitting does preserve temperature or material" + Color.RESET);
+        } else {
+            System.out.println(Color.RED + "Edge pyramid splitting doesn't preserve temperature or material" + Color.RESET);
+        }
+        Euclidean3DSpace.clean();
+
+        Euclidean3DSpace.getOrCreateSquarePyramid(point0, pointX, pointXY, pointY, pointZ, material, temperature);
+        Euclidean3DSplitter.splitAdjacentSquarePyramids();
+        wrongPolyhedra = Euclidean3DSpace.getPolyhedra().stream()
+                .filter(polyhedra -> polyhedra.getTemperature() != temperature || polyhedra.getMaterial() != material)
+                .collect(Collectors.toList());
+        if (wrongPolyhedra.size() == 0) {
+            System.out.println(Color.GREEN + "Square pyramid splitting does preserve temperature or material" + Color.RESET);
+        } else {
+            System.out.println(Color.RED + "Square pyramid splitting doesn't preserve temperature or material" + Color.RESET);
+        }
+        Euclidean3DSpace.getPolyhedra().stream().map(TriangularPyramid.class::cast)
+                .collect(Collectors.toList())
+                .forEach(Euclidean3DSpace::removeTriangularPyramid);
+
+        Euclidean3DSpace.getOrCreateParallelepiped(point0, vectorX, vectorY, vectorZ, material, temperature);
+        Euclidean3DSplitter.splitParallelopipeds();
+        wrongPolyhedra = Euclidean3DSpace.getPolyhedra().stream()
+                .filter(polyhedra -> polyhedra.getTemperature() != temperature || polyhedra.getMaterial() != material)
+                .collect(Collectors.toList());
+        if (wrongPolyhedra.size() == 0) {
+            System.out.println(Color.GREEN + "Parallelepiped splitting does preserve temperature or material" + Color.RESET);
+        } else {
+            System.out.println(Color.RED + "Parallelepiped splitting doesn't preserve temperature or material" + Color.RESET);
+        }
+
     }
 }

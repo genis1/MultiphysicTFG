@@ -5,6 +5,9 @@ import custom.objects.dimensions1.Edge;
 import custom.objects.dimensions1.Vector;
 import custom.objects.dimensions2.Face;
 import custom.objects.dimensions3.*;
+import custom.objects.temperature.diffusion.Materials;
+import custom.objects.temperature.diffusion.TemperatureContainer;
+import custom.objects.temperature.diffusion.TemperatureInterface;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,8 +23,8 @@ public class Euclidean3DSpace {
 
     private static final Set<Point> points = new TreeSet<>();
     private static final TreeSet<Edge> edges = new TreeSet<>();
-    private static final Set<Face> faces = new TreeSet<>();
-    private static final Set<Polyhedron> polyhedra = new TreeSet<>();
+    private static final Set<TemperatureInterface> faces = new TreeSet<>();
+    private static final Set<TemperatureContainer> polyhedra = new TreeSet<>();
 
 
     //Dimension 0
@@ -88,7 +91,7 @@ public class Euclidean3DSpace {
         return anyFoundEdge.stream().findFirst();
     }
 
-    private static void removeEdge(Edge edge, Face face) {
+    private static void removeEdge(Edge edge, TemperatureInterface face) {
         edge.removeAdjacentFace(face);
         if (edge.getAdjacentFaces().isEmpty()) {
             Euclidean3DSpace.edges.remove(edge);
@@ -99,22 +102,22 @@ public class Euclidean3DSpace {
 
     //Dimension 2
 
-    private static void addFaces(Face... faces) {
+    private static void addFaces(TemperatureInterface... faces) {
         Collections.addAll(Euclidean3DSpace.faces, faces);
     }
 
-    public static Set<Face> getFaces() {
+    public static Set<TemperatureInterface> getFaces() {
         return Euclidean3DSpace.faces;
     }
 
-    public static Face getOrCreateTriangularFace(Point point0, Point point1, Point point2) {
+    public static TemperatureInterface getOrCreateTriangularFace(Point point0, Point point1, Point point2) {
         //Try finding it
-        Optional<Face> anyFoundFace = findTriangularFace(point0, point1, point2);
+        Optional<TemperatureInterface> anyFoundFace = findTriangularFace(point0, point1, point2);
 
         return anyFoundFace
                 //If face is not found create a new one
                 .orElseGet(() -> {
-                    Face newTriangularFace = new Face(point0, point1, point2);
+                    TemperatureInterface newTriangularFace = new TemperatureInterface(point0, point1, point2);
                     Euclidean3DSpace.addFaces(newTriangularFace);
                     return newTriangularFace;
                 });
@@ -123,21 +126,21 @@ public class Euclidean3DSpace {
     /**
      * Points that constitute the face must be introduced ordered.
      */
-    public static Face getOrCreateSquareFace(Point point0, Point point1, Point point2, Point point3) {
+    public static TemperatureInterface getOrCreateSquareFace(Point point0, Point point1, Point point2, Point point3) {
         //Try finding it
-        Optional<Face> anyFoundFace = findSquareFace(point0, point1, point2, point3);
+        Optional<TemperatureInterface> anyFoundFace = findSquareFace(point0, point1, point2, point3);
 
         return anyFoundFace
                 //If face is not found create a new one
                 .orElseGet(() -> {
-                    Face newSquareFace = new Face(point0, point1, point2, point3);
+                    TemperatureInterface newSquareFace = new TemperatureInterface(point0, point1, point2, point3);
                     Euclidean3DSpace.addFaces(newSquareFace);
                     return newSquareFace;
                 });
     }
 
-    private static Optional<Face> findTriangularFace(Point point0, Point point1, Point point2) {
-        Set<Face> anyFoundFace = Euclidean3DSpace.getFaces().stream()
+    private static Optional<TemperatureInterface> findTriangularFace(Point point0, Point point1, Point point2) {
+        Set<TemperatureInterface> anyFoundFace = Euclidean3DSpace.getFaces().stream()
                 .filter(existingFace -> existingFace.getNumberOfPoints() == 3)
                 .filter(existingFace -> existingFace.compareTriangularFaceToPoints(point0, point1, point2) == 0)
                 .collect(Collectors.toSet());
@@ -145,8 +148,8 @@ public class Euclidean3DSpace {
         return anyFoundFace.stream().findFirst();
     }
 
-    private static Optional<Face> findSquareFace(Point point0, Point point1, Point point2, Point point3) {
-        Set<Face> anyFoundFace = Euclidean3DSpace.getFaces().stream()
+    private static Optional<TemperatureInterface> findSquareFace(Point point0, Point point1, Point point2, Point point3) {
+        Set<TemperatureInterface> anyFoundFace = Euclidean3DSpace.getFaces().stream()
                 .filter(face -> face.getNumberOfPoints() == 4)
                 .filter(face -> face.compareToPoints(point0, point1, point2, point3) == 0)
                 .collect(Collectors.toSet());
@@ -154,7 +157,7 @@ public class Euclidean3DSpace {
         return anyFoundFace.stream().findFirst();
     }
 
-    private static void removeFace(Face face, Polyhedron polyhedron) {
+    private static void removeFace(TemperatureInterface face, Polyhedron polyhedron) {
         face.removeParentPolyhedron(polyhedron);
         if (face.getParentPolyhedra().isEmpty()) {
             Euclidean3DSpace.faces.remove(face);
@@ -163,7 +166,7 @@ public class Euclidean3DSpace {
     }
 
     //Dimension3
-    private static void addPolyhedron(Polyhedron polyhedron) {
+    private static void addPolyhedron(TemperatureContainer polyhedron) {
         Euclidean3DSpace.polyhedra.add(polyhedron);
     }
 
@@ -171,18 +174,18 @@ public class Euclidean3DSpace {
         Euclidean3DSpace.polyhedra.remove(polyhedron);
     }
 
-    public static Set<Polyhedron> getPolyhedra() {
+    public static Set<TemperatureContainer> getPolyhedra() {
         return Euclidean3DSpace.polyhedra;
     }
 
     //Triangular pyramid
-    public static TriangularPyramid getOrCreateTriangularPyramid(Point point0, Point point1, Point point2, Point point3) {
+    public static TriangularPyramid getOrCreateTriangularPyramid(Point point0, Point point1, Point point2, Point point3, Materials.TemperatureDiffusion material, double temperature) {
         Optional<TriangularPyramid> anyFoundPyramid = findTriangularPyramid(point0, point1, point2, point3);
 
         return anyFoundPyramid
                 //If pyramid is not found create a new one
                 .orElseGet(() -> {
-                    TriangularPyramid triangularPyramid = new TriangularPyramid(point0, point1, point2, point3);
+                    TriangularPyramid triangularPyramid = new TriangularPyramid(point0, point1, point2, point3, material, temperature);
                     Euclidean3DSpace.addPolyhedron(triangularPyramid);
                     return triangularPyramid;
                 });
@@ -223,12 +226,12 @@ public class Euclidean3DSpace {
     }
 
     //Square pyramid
-    public static SquarePyramid getOrCreateSquarePyramid(Point base0, Point base1, Point base2, Point base3, Point apex) {
+    public static SquarePyramid getOrCreateSquarePyramid(Point base0, Point base1, Point base2, Point base3, Point apex, Materials.TemperatureDiffusion material, double temperature) {
         Optional<SquarePyramid> anyFoundPyramid = findSquarePyramid(base0, base1, base2, base3, apex);
         return anyFoundPyramid
                 //If pyramid is not found create a new one
                 .orElseGet(() -> {
-                    SquarePyramid squarePyramid = new SquarePyramid(base0, base1, base2, base3, apex);
+                    SquarePyramid squarePyramid = new SquarePyramid(base0, base1, base2, base3, apex, material, temperature);
                     Euclidean3DSpace.addPolyhedron(squarePyramid);
                     return squarePyramid;
                 });
@@ -259,13 +262,13 @@ public class Euclidean3DSpace {
     }
 
     //Parallelepiped
-    public static Parallelepiped getOrCreateParallelepiped(Point origin, Vector vector0, Vector vector1, Vector vector2) {
+    public static Parallelepiped getOrCreateParallelepiped(Point origin, Vector vector0, Vector vector1, Vector vector2, Materials.TemperatureDiffusion material, double temperature) {
         Optional<Parallelepiped> anyFoundParallelepiped = findParallelepiped(origin, vector0, vector1, vector2);
 
         return anyFoundParallelepiped
                 //If it is not found create a new one
                 .orElseGet(() -> {
-                    Parallelepiped parallelepiped = new Parallelepiped(origin, vector0, vector1, vector2);
+                    Parallelepiped parallelepiped = new Parallelepiped(origin, vector0, vector1, vector2, material, temperature);
                     Euclidean3DSpace.addPolyhedron(parallelepiped);
                     return parallelepiped;
                 });
@@ -297,12 +300,12 @@ public class Euclidean3DSpace {
 
     //Triangular prism
 
-    public static TriangularPrism getOrCreateTriangularPrism(Point point0, Point point1, Point point2, Vector directon) {
+    public static TriangularPrism getOrCreateTriangularPrism(Point point0, Point point1, Point point2, Vector directon, Materials.TemperatureDiffusion material, double temperature) {
         Optional<TriangularPrism> anyFoundTriangularPrism = findTriangularPrism(point0, point1, point2, directon);
         return anyFoundTriangularPrism
                 //If it is not found create a new one
                 .orElseGet(() -> {
-                    TriangularPrism triangularPrism = new TriangularPrism(point0, point1, point2, directon);
+                    TriangularPrism triangularPrism = new TriangularPrism(point0, point1, point2, directon, material, temperature);
                     Euclidean3DSpace.addPolyhedron(triangularPrism);
                     return triangularPrism;
                 });
@@ -354,7 +357,7 @@ public class Euclidean3DSpace {
     }
 
     public static void printFaces() {
-        Set<Face> faces = Euclidean3DSpace.getFaces();
+        Set<TemperatureInterface> faces = Euclidean3DSpace.getFaces();
         System.out.println("Printing " + faces.size() + " faces");
         for (Face face : faces) {
             face.print();
@@ -362,10 +365,31 @@ public class Euclidean3DSpace {
     }
 
     public static void printPolyhedron() {
-        Set<Polyhedron> polyhedra = Euclidean3DSpace.getPolyhedra();
+        Set<TemperatureContainer> polyhedra = Euclidean3DSpace.getPolyhedra();
         System.out.println("Printing " + polyhedra.size() + " polyhedra");
         for (Polyhedron polyhedron : polyhedra) {
             polyhedron.print();
         }
+    }
+
+    public static void clean() {
+        while (Euclidean3DSpace.getPolyhedra().size() != 0) {
+            TemperatureContainer polyhedra = Euclidean3DSpace.getPolyhedra().iterator().next();
+            switch (polyhedra.type) {
+                case TRIANGULAR_PYRAMID:
+                    Euclidean3DSpace.removeTriangularPyramid(TriangularPyramid.class.cast(polyhedra));
+                    break;
+                case SQUARE_PYRAMID:
+                    Euclidean3DSpace.removeSquarePyramid(SquarePyramid.class.cast(polyhedra));
+                    break;
+                case TRIANGULAR_PRISM:
+                    Euclidean3DSpace.removeTriangularPrism(TriangularPrism.class.cast(polyhedra));
+                    break;
+                case QUADRATIC_PRISM:
+                    Euclidean3DSpace.removeParallelepiped(Parallelepiped.class.cast(polyhedra));
+                    break;
+            }
+        }
+
     }
 }

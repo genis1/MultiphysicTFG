@@ -2,8 +2,11 @@ package custom.objects.dimensions2;
 
 import custom.objects.dimensions0.Point;
 import custom.objects.dimensions1.Edge;
+import custom.objects.dimensions1.Vector;
 import custom.objects.dimensions3.Polyhedron;
 import custom.space.Euclidean3DSpace;
+import custom.utils.Centroid;
+import custom.utils.VectorUtils;
 
 import java.util.*;
 
@@ -48,7 +51,6 @@ public class Face implements Comparable<Face> {
     public List<Point> getPoints() {
         return points;
     }
-
 
     public void addParentPolyhedron(Polyhedron polyhedron) {
         this.parentPolyhedra.add(polyhedron);
@@ -144,5 +146,21 @@ public class Face implements Comparable<Face> {
 
         }
         return 0;
+    }
+
+    public Vector getNormal() {
+        if (this.getPoints().size() != 3)
+            throw new UnsupportedOperationException("Face.getNormal() is only available for triangular faces");
+        Vector vector1 = VectorUtils.subtraction(this.getPoints().get(1), this.getPoints().get(0));
+        Vector vector2 = VectorUtils.subtraction(this.getPoints().get(2), this.getPoints().get(0));
+        return VectorUtils.crossProduct(vector1, vector2).divide(2);
+    }
+
+    public double getArea() {
+        return this.getNormal().getLength();
+    }
+
+    public Point getCentroid(){
+        return Centroid.getFrom3Points(this);
     }
 }
