@@ -61,4 +61,9 @@ public class Vector implements Comparable<Vector> {
             return 0;
         }
     }
+
+    @Override
+    public String toString() {
+        return "(" + this.getXCoordinate() + "," + this.getYCoordinate() + "," + this.getZCoordinate() + ")";
+    }
 }
