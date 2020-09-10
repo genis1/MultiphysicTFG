@@ -14,6 +14,7 @@ public class Euclidean3DSplitter {
     public static void simplifyGrid() {
         Euclidean3DSplitter.splitParallelopipeds();
         Euclidean3DSplitter.splitTriangularPrisms();
+        //This method must be last
         Euclidean3DSplitter.splitAdjacentSquarePyramids();
     }
 

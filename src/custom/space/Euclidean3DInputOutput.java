@@ -30,7 +30,8 @@ public class Euclidean3DInputOutput {
 
         File file = new File(root + string);
         if (!file.exists()) {
-            file = Arrays.stream(Objects.requireNonNull(rootFile.listFiles()))
+            file = Arrays.stream(Objects.requireNonNull(file.getParentFile().listFiles()))
+                    .filter(file1 -> file1.getName().startsWith(string))
                     .reduce((file1, file2) -> {
                         int isBigger = file1.getName().compareTo(file2.getName());
                         if (isBigger > 0) return file1;

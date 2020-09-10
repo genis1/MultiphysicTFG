@@ -32,6 +32,7 @@ public class Edge implements Comparable<Edge> {
 
         startPoint = Euclidean3DSpace.getOrCreatePoint(startPoint);
         endPoint = Euclidean3DSpace.getOrCreatePoint(endPoint);
+        if (startPoint==null||endPoint==null) throw new IllegalArgumentException("Edge must be formed by two points");
         points.add(startPoint);
         points.add(endPoint);
         startPoint.addAdjacentEdge(this);
