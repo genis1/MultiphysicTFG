@@ -99,10 +99,10 @@ public class Euclidean3DTimeStepperTest extends ConstantUtils {
         Point sharedBase1 = new Point(0, 1, 0);
         Point sharedBase2 = new Point(1, 0, 0);
         Point apexP = new Point(0, 0, 1);
-        Point apexN = new Point(0, 0, -1d/2);
+        Point apexN = new Point(0, 0, -1d / 2);
 
         Euclidean3DSpace.clean();
-        Euclidean3DSpace.getOrCreateTriangularPyramid(sharedBase0, sharedBase1, sharedBase2, apexP,  Materials.TemperatureDiffusion.SrTiO3, 400);
+        Euclidean3DSpace.getOrCreateTriangularPyramid(sharedBase0, sharedBase1, sharedBase2, apexP, Materials.TemperatureDiffusion.SrTiO3, 400);
         Euclidean3DSpace.getOrCreateTriangularPyramid(sharedBase0, sharedBase1, sharedBase2, apexN, Materials.TemperatureDiffusion.LaAlO3, 200);
 
         Euclidean3DTimeStepper.setInitialTimeAndTimeStep(0d, 0.1);
@@ -127,11 +127,11 @@ public class Euclidean3DTimeStepperTest extends ConstantUtils {
     }
 
     private static void testCalculatedValueTranslatedAndRotated() {
-        Point sharedBase0 = rotate3Angles(new Point(0 + 0.23, 0 - 0.5, 0 + 0.1));
-        Point sharedBase1 = rotate3Angles(new Point(0 + 0.23, 1 - 0.5, 0 + 0.1));
-        Point sharedBase2 = rotate3Angles(new Point(1 + 0.23, 0 - 0.5, 0 + 0.1));
-        Point apexP = rotate3Angles(new Point(0 + 0.23, 0 - 0.5, 1 + 0.1));
-        Point apexN = rotate3Angles(new Point(0 + 0.23, 0 - 0.5, -1 + 0.1));
+        Point sharedBase0 = VectorUtils.rotate3Angles(new Point(0 + 0.23, 0 - 0.5, 0 + 0.1));
+        Point sharedBase1 = VectorUtils.rotate3Angles(new Point(0 + 0.23, 1 - 0.5, 0 + 0.1));
+        Point sharedBase2 = VectorUtils.rotate3Angles(new Point(1 + 0.23, 0 - 0.5, 0 + 0.1));
+        Point apexP = VectorUtils.rotate3Angles(new Point(0 + 0.23, 0 - 0.5, 1 + 0.1));
+        Point apexN = VectorUtils.rotate3Angles(new Point(0 + 0.23, 0 - 0.5, -1 + 0.1));
 
         Euclidean3DSpace.clean();
         Euclidean3DSpace.getOrCreateTriangularPyramid(sharedBase0, sharedBase1, sharedBase2, apexP, material, 400);
@@ -142,30 +142,4 @@ public class Euclidean3DTimeStepperTest extends ConstantUtils {
         Euclidean3DSpace.printPolyhedron();
     }
 
-    private static Point rotateXAxis(Point point, double angleRadian) {
-        Vector vector = VectorUtils.subtraction(point, new Point(0, 0, 0));
-        double yCoordinate = VectorUtils.dotProduct(vector, new Vector(0, Math.cos(angleRadian), Math.sin(angleRadian)));
-        double zCoordinate = VectorUtils.dotProduct(vector, new Vector(0, -Math.sin(angleRadian), Math.cos(angleRadian)));
-        return new Point(vector.getXCoordinate(), yCoordinate, zCoordinate);
-    }
-
-    private static Point rotateYAxis(Point point, double angleRadian) {
-        Vector vector = VectorUtils.subtraction(point, new Point(0, 0, 0));
-        double xCoordinate = VectorUtils.dotProduct(vector, new Vector(Math.cos(angleRadian), 0, -Math.sin(angleRadian)));
-        double zCoordinate = VectorUtils.dotProduct(vector, new Vector(Math.sin(angleRadian), 0, Math.cos(angleRadian)));
-        return new Point(xCoordinate, vector.getYCoordinate(), zCoordinate);
-    }
-
-    private static Point rotateZAxis(Point point, double angleRadian) {
-        Vector vector = VectorUtils.subtraction(point, new Point(0, 0, 0));
-        double xCoordinate = VectorUtils.dotProduct(vector, new Vector(Math.cos(angleRadian), Math.sin(angleRadian), 0));
-        double yCoordinate = VectorUtils.dotProduct(vector, new Vector(-Math.sin(angleRadian), Math.cos(angleRadian), 0));
-        return new Point(xCoordinate, yCoordinate, vector.getZCoordinate());
-    }
-
-    private static Point rotate3Angles(Point point){
-        point = rotateXAxis(point, 5);
-        point = rotateYAxis(point, 10);
-        return rotateZAxis(point, 20);
-    }
 }

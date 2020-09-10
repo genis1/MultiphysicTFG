@@ -29,4 +29,52 @@ public class VectorUtils {
                 point0.getZCoordinate() - point1.getZCoordinate()
         );
     }
+
+    private static Point rotateXAxis(Point point, double angleRadian) {
+        Vector vector = subtraction(point, new Point(0, 0, 0));
+        Vector vectorRotated = rotateXAxis(vector, angleRadian);
+        return new Point(vectorRotated.getXCoordinate(), vectorRotated.getYCoordinate(), vectorRotated.getZCoordinate());
+    }
+
+    private static Vector rotateXAxis(Vector vector, double angleRadian) {
+        double yCoordinate = dotProduct(vector, new Vector(0, Math.cos(angleRadian), Math.sin(angleRadian)));
+        double zCoordinate = dotProduct(vector, new Vector(0, -Math.sin(angleRadian), Math.cos(angleRadian)));
+        return new Vector(vector.getXCoordinate(), yCoordinate, zCoordinate);
+    }
+
+    private static Point rotateYAxis(Point point, double angleRadian) {
+        Vector vector = subtraction(point, new Point(0, 0, 0));
+        Vector vectorRotated = rotateYAxis(vector, angleRadian);
+        return new Point(vectorRotated.getXCoordinate(), vectorRotated.getYCoordinate(), vectorRotated.getZCoordinate());
+    }
+
+    private static Vector rotateYAxis(Vector vector, double angleRadian) {
+        double xCoordinate = dotProduct(vector, new Vector(Math.cos(angleRadian), 0, -Math.sin(angleRadian)));
+        double zCoordinate = dotProduct(vector, new Vector(Math.sin(angleRadian), 0, Math.cos(angleRadian)));
+        return new Vector(xCoordinate, vector.getYCoordinate(), zCoordinate);
+    }
+
+    private static Point rotateZAxis(Point point, double angleRadian) {
+        Vector vector = subtraction(point, new Point(0, 0, 0));
+        Vector vectorRotated = rotateZAxis(vector, angleRadian);
+        return new Point(vectorRotated.getXCoordinate(), vectorRotated.getYCoordinate(), vectorRotated.getZCoordinate());
+    }
+
+    private static Vector rotateZAxis(Vector vector, double angleRadian) {
+        double xCoordinate = dotProduct(vector, new Vector(Math.cos(angleRadian), Math.sin(angleRadian), 0));
+        double yCoordinate = dotProduct(vector, new Vector(-Math.sin(angleRadian), Math.cos(angleRadian), 0));
+        return new Vector(xCoordinate, yCoordinate, vector.getZCoordinate());
+    }
+
+    public static Point rotate3Angles(Point point) {
+        point = rotateXAxis(point, 5);
+        point = rotateYAxis(point, 10);
+        return rotateZAxis(point, 20);
+    }
+
+    public static Vector rotate3Angles(Vector vector) {
+        vector = rotateXAxis(vector, 5);
+        vector = rotateYAxis(vector, 10);
+        return rotateZAxis(vector, 20);
+    }
 }
