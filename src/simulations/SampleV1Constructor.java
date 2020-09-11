@@ -267,9 +267,7 @@ public class SampleV1Constructor {
                 .map(TriangularPyramid.class::cast)
                 .filter(triangularPyramid -> {
                     Point centroid = triangularPyramid.getCentroid();
-                    boolean isPointInsideR0 = isPointInsideR0(centroid);
-                    boolean isPointInsideR1AndR0 = isPointInsideR1AndR0(centroid);
-                    return isPointInsideR1AndR0 && !isPointInsideR0;
+                    return isPointInsideR1(centroid);
                 })
                 .collect(Collectors.toList());
     }
@@ -289,11 +287,7 @@ public class SampleV1Constructor {
                 .map(TriangularPyramid.class::cast)
                 .filter(triangularPyramid -> {
                     Point centroid = triangularPyramid.getCentroid();
-                    boolean isPointInsideR2 = isPointInsideR2(centroid);
-                    boolean isPointInsideR3AndR2 = isPointInsideR3AndR2(centroid);
-                    if (!isPointInsideR3AndR2 && isPointInsideR2)
-                        throw new IllegalStateException("Region 32 should contain region2");
-                    return isPointInsideR3AndR2 && !isPointInsideR2;
+                    return isPointInsideR3(centroid);
                 })
                 .collect(Collectors.toList());
     }
@@ -303,16 +297,12 @@ public class SampleV1Constructor {
                 .map(TriangularPyramid.class::cast)
                 .filter(triangularPyramid -> {
                     Point centroid = triangularPyramid.getCentroid();
-                    boolean isPointInsideR3AndR2 = isPointInsideR3AndR2(centroid);
-                    boolean isPointInsideR4AndR3AndR2 = isPointInsideR4AndR3AndR2(centroid);
-                    if (isPointInsideR3AndR2 && !isPointInsideR4AndR3AndR2)
-                        throw new IllegalStateException("Region 432 should contain region32");
-                    return isPointInsideR4AndR3AndR2 && !isPointInsideR3AndR2;
+                    return isPointInsideR4(centroid);
                 })
                 .collect(Collectors.toList());
     }
 
-    private static boolean isPointInsideR0(Point centroid) {
+    public static boolean isPointInsideR0(Point centroid) {
         return Euclidean3DSelector.isPointInsideCube(C21, C11, C26, height, centroid);
     }
 
@@ -321,7 +311,13 @@ public class SampleV1Constructor {
         );
     }
 
-    private static boolean isPointInsideR2(Point centroid) {
+    public static boolean isPointInsideR1(Point centroid) {
+        boolean isPointInsideR0 = isPointInsideR0(centroid);
+        boolean isPointInsideR1AndR0 = isPointInsideR1AndR0(centroid);
+        return isPointInsideR1AndR0 && !isPointInsideR0;
+    }
+
+    public static boolean isPointInsideR2(Point centroid) {
         return Euclidean3DSelector.isPointInsideCube(C21, C11, C26, supportHeight.divide(2), centroid);
     }
 
@@ -329,8 +325,24 @@ public class SampleV1Constructor {
         return Euclidean3DSelector.isPointInsideCube(EA1, EA2, EA4, supportHeight.divide(2), centroid);
     }
 
+    public static boolean isPointInsideR3(Point centroid) {
+        boolean isPointInsideR2 = isPointInsideR2(centroid);
+        boolean isPointInsideR3AndR2 = isPointInsideR3AndR2(centroid);
+        if (!isPointInsideR3AndR2 && isPointInsideR2)
+            throw new IllegalStateException("Region 32 should contain region2");
+        return isPointInsideR3AndR2 && !isPointInsideR2;
+    }
+
     public static boolean isPointInsideR4AndR3AndR2(Point centroid) {
         return Euclidean3DSelector.isPointInsideCube(EA1.add(leftMargin).add(topMargin), EA2.add(topMargin).add(rightMargin), EA4.add(leftMargin).add(bottomMargin), supportHeight, centroid);
+    }
+
+    public static boolean isPointInsideR4(Point centroid) {
+        boolean isPointInsideR3AndR2 = isPointInsideR3AndR2(centroid);
+        boolean isPointInsideR4AndR3AndR2 = isPointInsideR4AndR3AndR2(centroid);
+        if (isPointInsideR3AndR2 && !isPointInsideR4AndR3AndR2)
+            throw new IllegalStateException("Region 432 should contain region32");
+        return isPointInsideR4AndR3AndR2 && !isPointInsideR3AndR2;
     }
 
 

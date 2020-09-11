@@ -7,6 +7,7 @@ import custom.objects.dimensions3.*;
 import custom.objects.temperature.diffusion.TemperatureInterface;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Euclidean3DSplitter {
@@ -44,6 +45,25 @@ public class Euclidean3DSplitter {
                     }
                 });
         return edge.orElseThrow(() -> new UnsupportedOperationException("There is no edge in the space"));
+    }
+
+    public static Edge findLongestEdgeWithParentPolyhedraSatisfying(Predicate<TriangularPyramid> condition) {
+        Optional<Edge> edge = Euclidean3DSpace.getEdges().stream()
+                .filter(edge1 -> {
+                    return edge1.getAdjacentFaces().stream()
+                            .flatMap(face -> face.getParentPolyhedra().stream())
+                            .map(TriangularPyramid.class::cast)
+                            .anyMatch(condition);
+                })
+                .reduce(((edge1, edge2) -> {
+                    if (edge1.getLength() > edge2.getLength()) {
+                        return edge1;
+                    } else {
+                        return edge2;
+                    }
+                }));
+        return edge.orElseThrow(() -> new UnsupportedOperationException("There is no edge in the space"));
+
     }
 
     public static void splitThroughEdge(Edge edge) {

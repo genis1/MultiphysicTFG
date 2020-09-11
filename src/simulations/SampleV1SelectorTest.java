@@ -9,7 +9,8 @@ import java.util.Collection;
 public class SampleV1SelectorTest {
 
     public static void main(String[] args) {
-        Euclidean3DInputOutput.read(SampleV1Simulator.SAMPLE_V1_INITIAL_MESH);
+        //Euclidean3DInputOutput.read(SampleV1Simulator.SAMPLE_V1_INITIAL_MESH);
+        Euclidean3DInputOutput.read(SampleV1Simulator.SAMPLE_V1_SPLITTED_MESH);
         testSelectR0();
         testSelectR1();
         testSelectR2();
@@ -37,19 +38,19 @@ public class SampleV1SelectorTest {
     private static void testSelectR0() {
         Collection<Polyhedron> selected = SampleV1Constructor.selectR0();
         if (selected.size() == 60) System.out.println(Color.GREEN + "R0 selection successful" + Color.RESET);
-        else System.out.println(Color.RED + "R0 selection failed" + Color.RESET);
+        else System.out.println(Color.RED + "R0 selection failed with " + selected.size() + Color.RESET);
     }
 
     private static void testSelectR1() {
         Collection<Polyhedron> selected = SampleV1Constructor.selectR1();
         if (selected.size() == 216) System.out.println(Color.GREEN + "R1 selection successful" + Color.RESET);
-        else System.out.println(Color.RED + "R1 selection failed" + Color.RESET);
+        else System.out.println(Color.RED + "R1 selection failed with " + selected.size() + Color.RESET);
     }
 
     private static void testSelectR2() {
         Collection<Polyhedron> selected = SampleV1Constructor.selectR2();
         if (selected.size() == 30) System.out.println(Color.GREEN + "R2 selection successful" + Color.RESET);
-        else System.out.println(Color.RED + "R2 selection failed" + Color.RESET);
+        else System.out.println(Color.RED + "R2 selection failed with " + selected.size() + Color.RESET);
     }
 
     private static void testSelectR3() {
