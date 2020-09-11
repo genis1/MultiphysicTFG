@@ -22,6 +22,10 @@ public class Euclidean3DSelector {
 
     }
 
+    public static boolean isPointInsideCube(Point point0, Point point1, Point point2, Vector height, Point centroid) {
+        return isPointInsideCube(point0, VectorUtils.subtraction(point1, point0), VectorUtils.subtraction(point2, point0), height, centroid);
+    }
+
     public static boolean isPointInsideCube(Point point0, Vector vector0, Vector vector1, Vector vector2, Point centroid) {
         Vector centroidVector = VectorUtils.subtraction(centroid, point0);
         double result0 = VectorUtils.dotProduct(centroidVector, vector0) / Math.pow(vector0.getLength(), 2);
