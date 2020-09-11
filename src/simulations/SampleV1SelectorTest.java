@@ -27,6 +27,11 @@ public class SampleV1SelectorTest {
         testSelectQ4();
         testSelectQ5();
         testSelectQ6();
+        testSelectC1();
+        testSelectC2();
+        testSelectC3();
+        testSelectC4();
+        testSelectC5();
     }
 
     private static void testSelectR0() {
@@ -129,6 +134,36 @@ public class SampleV1SelectorTest {
         Collection<Polyhedron> selected = SampleV1Constructor.selectQ6();
         if (selected.size() == 12) System.out.println(Color.GREEN + "Q6 selection successful" + Color.RESET);
         else System.out.println(Color.RED + "Q6 selection failed with " + selected.size() + Color.RESET);
+    }
+
+    private static void testSelectC1() {
+        Collection<Polyhedron> selected = SampleV1Constructor.selectC1();
+        if (selected.size() == 12) System.out.println(Color.GREEN + "C1 selection successful" + Color.RESET);
+        else System.out.println(Color.RED + "C1 selection failed with " + selected.size() + Color.RESET);
+    }
+
+    private static void testSelectC2() {
+        Collection<Polyhedron> selected = SampleV1Constructor.selectC2();
+        if (selected.size() == 12) System.out.println(Color.GREEN + "C2 selection successful" + Color.RESET);
+        else System.out.println(Color.RED + "C2 selection failed with " + selected.size() + Color.RESET);
+    }
+
+    private static void testSelectC3() {
+        Collection<Polyhedron> selected = SampleV1Constructor.selectC3();
+        if (selected.size() == 12) System.out.println(Color.GREEN + "C3 selection successful" + Color.RESET);
+        else System.out.println(Color.RED + "C3 selection failed with " + selected.size() + Color.RESET);
+    }
+
+    private static void testSelectC4() {
+        Collection<Polyhedron> selected = SampleV1Constructor.selectC4();
+        if (selected.size() == 12) System.out.println(Color.GREEN + "C4 selection successful" + Color.RESET);
+        else System.out.println(Color.RED + "C4 selection failed with " + selected.size() + Color.RESET);
+    }
+
+    private static void testSelectC5() {
+        Collection<Polyhedron> selected = SampleV1Constructor.selectC5();
+        if (selected.size() == 12) System.out.println(Color.GREEN + "C5 selection successful" + Color.RESET);
+        else System.out.println(Color.RED + "C5 selection failed with " + selected.size() + Color.RESET);
     }
 
 

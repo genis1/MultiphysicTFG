@@ -443,4 +443,36 @@ public class SampleV1Constructor {
                 .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(P61, P62, P64, height, triangularPyramid.getCentroid()))
                 .collect(Collectors.toList());
     }
+
+    public static Collection<Polyhedron> selectC1() {
+        return Euclidean3DSpace.getPolyhedra().stream()
+                .map(TriangularPyramid.class::cast)
+                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(C11, C12, C21, height, triangularPyramid.getCentroid()))
+                .collect(Collectors.toList());
+    }
+    public static Collection<Polyhedron> selectC2() {
+        return Euclidean3DSpace.getPolyhedra().stream()
+                .map(TriangularPyramid.class::cast)
+                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(C12, C13, C22, height, triangularPyramid.getCentroid()))
+                .collect(Collectors.toList());
+    }
+    public static Collection<Polyhedron> selectC3() {
+        return Euclidean3DSpace.getPolyhedra().stream()
+                .map(TriangularPyramid.class::cast)
+                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(C13, C14, C23, height, triangularPyramid.getCentroid()))
+                .collect(Collectors.toList());
+    }
+    public static Collection<Polyhedron> selectC4() {
+        return Euclidean3DSpace.getPolyhedra().stream()
+                .map(TriangularPyramid.class::cast)
+                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(C14, C15, C24, height, triangularPyramid.getCentroid()))
+                .collect(Collectors.toList());
+    }
+    public static Collection<Polyhedron> selectC5() {
+        return Euclidean3DSpace.getPolyhedra().stream()
+                .map(TriangularPyramid.class::cast)
+                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(C15, C16, C25, height, triangularPyramid.getCentroid()))
+                .collect(Collectors.toList());
+    }
+
 }
