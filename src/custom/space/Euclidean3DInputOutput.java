@@ -8,17 +8,31 @@ import java.util.Objects;
 
 public class Euclidean3DInputOutput {
 
-    private static final String root = "simulations/";
-    private static final String extension = ".tsv";
+    public static final String root = "simulations/";
+    public static final String extension = ".tsv";
+    private static final String SEPARATOR = "_";
 
-    public static void read(String string) {
+    public static double read(String string) {
         File file = findFile(string);
+        return readFile(file);
+    }
+
+    public static double readFile(File file) {
+        long startNano = System.nanoTime();
+        System.out.println("Reading file " + file.getPath());
+
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
             bufferedReader.lines().forEach(TriangularPyramid::parse);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+        System.out.println("Finished reading file " + file.getPath() + " . It took " + ((System.nanoTime() - startNano) * 1e-9) + " seconds");
+
+        String timeAsString = file.getName().split(SEPARATOR)[1].split(extension)[0];
+        return Double.parseDouble(timeAsString);
     }
 
     /**
@@ -31,9 +45,9 @@ public class Euclidean3DInputOutput {
         File file = new File(root + string);
         if (!file.exists()) {
             file = Arrays.stream(Objects.requireNonNull(file.getParentFile().listFiles()))
-                    .filter(file1 -> file1.getName().startsWith(string))
+                    .filter(file1 -> file1.getName().split(SEPARATOR)[0].equals(string))
                     .reduce((file1, file2) -> {
-                        int isBigger = file1.getName().compareTo(file2.getName());
+                        int isBigger = file1.getName().split(SEPARATOR)[1].compareTo(file2.getName());
                         if (isBigger > 0) return file1;
                         else if (isBigger < 0) return file2;
                         else throw new IllegalStateException("Duplicated file");
@@ -44,9 +58,10 @@ public class Euclidean3DInputOutput {
 
     public static void save(String string) {
         try {
+            long startTime = System.nanoTime();
             Double time = Euclidean3DTimeStepper.getTime();
             if (time == null) throw new IllegalStateException("A simulation without time cannot be saved");
-            File file = new File(root + string + time + extension);
+            File file = new File(root + string + SEPARATOR + time + extension);
             //noinspection ResultOfMethodCallIgnored
             file.getParentFile().mkdirs();
             boolean newFile = file.createNewFile();
@@ -61,6 +76,7 @@ public class Euclidean3DInputOutput {
                 }
             });
             fileWriter.flush();
+            System.out.println("Finished saving file " + file.getPath() + " . It took " + ((System.nanoTime() - startTime) * 1e-9) + " seconds");
         } catch (IOException e) {
             e.printStackTrace();
         }

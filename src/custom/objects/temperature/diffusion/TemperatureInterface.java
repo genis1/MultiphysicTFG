@@ -71,7 +71,7 @@ public class TemperatureInterface extends Face {
         averageThermalConductivity = (d0 * thermalConductivity0 + d1 * thermalConductivity1) / this.getEffectiveDistanceBetweenParentPolyhedra();
     }
 
-    public void addHeatTransferedToParentPolyehdra() {
+    public void addHeatTransferedToParentPolyehdra(double deltaTime) {
         Iterator<Polyhedron> iterator = this.getParentPolyhedra().iterator();
         Polyhedron parentPolyhedron0 = iterator.next();
         if (!iterator.hasNext()) return;
@@ -81,8 +81,22 @@ public class TemperatureInterface extends Face {
         TemperatureContainer container0 = TemperatureContainer.class.cast(parentPolyhedron0);
         TemperatureContainer container1 = TemperatureContainer.class.cast(parentPolyhedron1);
 
-        double heatPerSecond = (container1.getTemperature() - container0.getTemperature()) * this.getAverageThermalConductivity() * this.getArea() / this.getEffectiveDistanceBetweenParentPolyhedra();
-        container0.addHeatingPower(heatPerSecond);
-        container1.addHeatingPower(-heatPerSecond);
+        double T0 = container0.getTemperature();
+        double T1 = container1.getTemperature();
+        if (T0 == T1) return;
+        double c = this.getAverageThermalConductivity() * this.getArea() / this.getEffectiveDistanceBetweenParentPolyhedra();
+        double H0 = container0.getHeatCapacity();
+        double c0 = c / H0;
+        double H1 = container1.getHeatCapacity();
+        double c1 = c / H1;
+
+        double expFactor = 1 - Math.pow(Math.E, -(c0 + c1) * deltaTime);
+        double dT0 = (T1 - T0) * H1 * expFactor / (H0 + H1);
+        double dT1 = (T0 - T1) * H0 * expFactor / (H0 + H1);
+        if (expFactor > 1d / 4) {
+            throw new IllegalStateException("Time discratization is too big for model");
+        }
+        container0.add_dT(dT0);
+        container1.add_dT(dT1);
     }
 }

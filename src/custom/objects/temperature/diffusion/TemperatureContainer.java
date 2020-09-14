@@ -6,7 +6,7 @@ public abstract class TemperatureContainer extends Polyhedron {
 
     private final Materials.TemperatureDiffusion material;
     private double temperature;
-    private double heatingPower;
+    private double dT;
 
     //Cached
     private Double heatCapacity;
@@ -15,35 +15,35 @@ public abstract class TemperatureContainer extends Polyhedron {
         super(type);
         this.material = material;
         this.temperature = temperature;
-        resetHeatingPower();
+        resetDeltaT();
     }
 
     public Materials.TemperatureDiffusion getMaterial() {
         return material;
     }
 
-    private double getHeatCapacity() {
+    public double getHeatCapacity() {
         if (this.heatCapacity == null) {
             this.heatCapacity = this.getVolume() * this.getMaterial().getDensity() * this.getMaterial().getSpecificHeatCapacity();
         }
         return heatCapacity;
     }
 
-    public void addHeatingPower(double heatingPower) {
-        this.heatingPower += heatingPower;
+    public void add_dT(double dT) {
+        this.dT += dT;
     }
 
-    private void resetHeatingPower() {
-        this.heatingPower = 0;
+    private void resetDeltaT() {
+        this.dT = 0;
     }
 
-    public double getHeatingPower() {
-        return heatingPower;
+    public double getDelataT() {
+        return this.dT;
     }
 
-    public void computeNewTemperature(double time) {
-        temperature += this.heatingPower * time / this.getHeatCapacity();
-        resetHeatingPower();
+    public void computeNewTemperature() {
+        this.temperature += dT;
+        resetDeltaT();
     }
 
     public double getTemperature() {

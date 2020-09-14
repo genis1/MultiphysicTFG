@@ -255,91 +255,75 @@ public class SampleV1Constructor {
     public static Collection<Polyhedron> selectR0() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> {
-                    Point centroid = triangularPyramid.getCentroid();
-                    return isPointInsideR0(centroid);
-                })
+                .filter(SampleV1Constructor::isPointInsideR0)
                 .collect(Collectors.toList());
     }
 
     public static Collection<Polyhedron> selectR1() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> {
-                    Point centroid = triangularPyramid.getCentroid();
-                    return isPointInsideR1(centroid);
-                })
+                .filter(SampleV1Constructor::isPointInsideR1)
                 .collect(Collectors.toList());
     }
 
     public static Collection<Polyhedron> selectR2() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> {
-                    Point centroid = triangularPyramid.getCentroid();
-                    return isPointInsideR2(centroid);
-                })
+                .filter(SampleV1Constructor::isPointInsideR2)
                 .collect(Collectors.toList());
     }
 
     public static Collection<Polyhedron> selectR3() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> {
-                    Point centroid = triangularPyramid.getCentroid();
-                    return isPointInsideR3(centroid);
-                })
+                .filter(SampleV1Constructor::isPointInsideR3)
                 .collect(Collectors.toList());
     }
 
     public static Collection<Polyhedron> selectR4() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> {
-                    Point centroid = triangularPyramid.getCentroid();
-                    return isPointInsideR4(centroid);
-                })
+                .filter(SampleV1Constructor::isPointInsideR4)
                 .collect(Collectors.toList());
     }
 
-    public static boolean isPointInsideR0(Point centroid) {
-        return Euclidean3DSelector.isPointInsideCube(C21, C11, C26, height, centroid);
+    public static boolean isPointInsideR0(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(C21, C11, C26, height, triangularPyramid.getCentroid());
     }
 
-    private static boolean isPointInsideR1AndR0(Point centroid) {
-        return Euclidean3DSelector.isPointInsideCube(EA1, EA2, EA4, height, centroid
-        );
+    private static boolean isPointInsideR1AndR0(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(EA1, EA2, EA4, height, triangularPyramid.getCentroid());
     }
 
-    public static boolean isPointInsideR1(Point centroid) {
-        boolean isPointInsideR0 = isPointInsideR0(centroid);
-        boolean isPointInsideR1AndR0 = isPointInsideR1AndR0(centroid);
+    public static boolean isPointInsideR1(TriangularPyramid triangularPyramid) {
+        boolean isPointInsideR0 = isPointInsideR0(triangularPyramid);
+        boolean isPointInsideR1AndR0 = isPointInsideR1AndR0(triangularPyramid);
         return isPointInsideR1AndR0 && !isPointInsideR0;
     }
 
-    public static boolean isPointInsideR2(Point centroid) {
-        return Euclidean3DSelector.isPointInsideCube(C21, C11, C26, supportHeight.divide(2), centroid);
+    public static boolean isPointInsideR2(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(C21, C11, C26, supportHeight.divide(2), triangularPyramid.getCentroid());
     }
 
-    public static boolean isPointInsideR3AndR2(Point centroid) {
-        return Euclidean3DSelector.isPointInsideCube(EA1, EA2, EA4, supportHeight.divide(2), centroid);
+    public static boolean isPointInsideR3AndR2(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(EA1, EA2, EA4, supportHeight.divide(2), triangularPyramid.getCentroid());
     }
 
-    public static boolean isPointInsideR3(Point centroid) {
-        boolean isPointInsideR2 = isPointInsideR2(centroid);
-        boolean isPointInsideR3AndR2 = isPointInsideR3AndR2(centroid);
+    public static boolean isPointInsideR3(TriangularPyramid triangularPyramid) {
+        boolean isPointInsideR2 = isPointInsideR2(triangularPyramid);
+        boolean isPointInsideR3AndR2 = isPointInsideR3AndR2(triangularPyramid);
         if (!isPointInsideR3AndR2 && isPointInsideR2)
             throw new IllegalStateException("Region 32 should contain region2");
         return isPointInsideR3AndR2 && !isPointInsideR2;
     }
 
-    public static boolean isPointInsideR4AndR3AndR2(Point centroid) {
-        return Euclidean3DSelector.isPointInsideCube(EA1.add(leftMargin).add(topMargin), EA2.add(topMargin).add(rightMargin), EA4.add(leftMargin).add(bottomMargin), supportHeight, centroid);
+    public static boolean isPointInsideR4AndR3AndR2(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(EA1.add(leftMargin).add(topMargin), EA2.add(topMargin).add(rightMargin), EA4.add(leftMargin).add(bottomMargin), supportHeight, triangularPyramid.getCentroid());
     }
 
-    public static boolean isPointInsideR4(Point centroid) {
-        boolean isPointInsideR3AndR2 = isPointInsideR3AndR2(centroid);
-        boolean isPointInsideR4AndR3AndR2 = isPointInsideR4AndR3AndR2(centroid);
+    public static boolean isPointInsideR4(TriangularPyramid triangularPyramid) {
+        boolean isPointInsideR3AndR2 = isPointInsideR3AndR2(triangularPyramid);
+        boolean isPointInsideR4AndR3AndR2 = isPointInsideR4AndR3AndR2(triangularPyramid);
         if (isPointInsideR3AndR2 && !isPointInsideR4AndR3AndR2)
             throw new IllegalStateException("Region 432 should contain region32");
         return isPointInsideR4AndR3AndR2 && !isPointInsideR3AndR2;
@@ -349,44 +333,68 @@ public class SampleV1Constructor {
     public static Collection<Polyhedron> selectT1() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> isCentroidInsideTX(triangularPyramid.getCentroid(), P13, C13, A1, C12, P14, height))
+                .filter(SampleV1Constructor::isCentroidInsideT1)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isCentroidInsideT1(TriangularPyramid triangularPyramid) {
+        return isCentroidInsideTX(triangularPyramid.getCentroid(), P13, C13, A1, C12, P14, height);
     }
 
 
     public static Collection<Polyhedron> selectT2() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> isCentroidInsideTX(triangularPyramid.getCentroid(), P23, C14, A2, C15, P24, height))
+                .filter(SampleV1Constructor::isCentroidInsideT2)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isCentroidInsideT2(TriangularPyramid triangularPyramid) {
+        return isCentroidInsideTX(triangularPyramid.getCentroid(), P23, C14, A2, C15, P24, height);
     }
 
     public static Collection<Polyhedron> selectT3() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> isCentroidInsideTX(triangularPyramid.getCentroid(), P33, C24, A3, C25, P34, height))
+                .filter(SampleV1Constructor::isCentroidInsideT3)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isCentroidInsideT3(TriangularPyramid triangularPyramid) {
+        return isCentroidInsideTX(triangularPyramid.getCentroid(), P33, C24, A3, C25, P34, height);
     }
 
     public static Collection<Polyhedron> selectT4() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> isCentroidInsideTX(triangularPyramid.getCentroid(), P43, C23, A4, C22, P44, height))
+                .filter(SampleV1Constructor::isCentroidInsideT4)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isCentroidInsideT4(TriangularPyramid triangularPyramid) {
+        return isCentroidInsideTX(triangularPyramid.getCentroid(), P43, C23, A4, C22, P44, height);
     }
 
     public static Collection<Polyhedron> selectT5() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> isCentroidInsideTX(triangularPyramid.getCentroid(), P52, C16, A5, C26, P53, height))
+                .filter(SampleV1Constructor::isCentroidInsideT5)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isCentroidInsideT5(TriangularPyramid triangularPyramid) {
+        return isCentroidInsideTX(triangularPyramid.getCentroid(), P52, C16, A5, C26, P53, height);
     }
 
     public static Collection<Polyhedron> selectT6() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> isCentroidInsideTX(triangularPyramid.getCentroid(), P62, C11, A6, C21, P63, height))
+                .filter(SampleV1Constructor::isCentroidInsideT6)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isCentroidInsideT6(TriangularPyramid triangularPyramid) {
+        return isCentroidInsideTX(triangularPyramid.getCentroid(), P62, C11, A6, C21, P63, height);
     }
 
     private static boolean isCentroidInsideTX(Point centroid, Point point0, Point point1, Point point2, Point point3, Point point4, Vector height) {
@@ -417,74 +425,122 @@ public class SampleV1Constructor {
     public static Collection<Polyhedron> selectQ1() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(P11, P12, P15, height, triangularPyramid.getCentroid()))
+                .filter(SampleV1Constructor::isPointInsideQ1)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isPointInsideQ1(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(P11, P12, P15, height, triangularPyramid.getCentroid());
     }
 
     public static Collection<Polyhedron> selectQ2() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(P21, P22, P25, height, triangularPyramid.getCentroid()))
+                .filter(SampleV1Constructor::isPointInsideQ2)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isPointInsideQ2(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(P21, P22, P25, height, triangularPyramid.getCentroid());
     }
 
     public static Collection<Polyhedron> selectQ3() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(P31, P32, P35, height, triangularPyramid.getCentroid()))
+                .filter(SampleV1Constructor::isPointInsideQ3)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isPointInsideQ3(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(P31, P32, P35, height, triangularPyramid.getCentroid());
     }
 
     public static Collection<Polyhedron> selectQ4() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(P41, P42, P45, height, triangularPyramid.getCentroid()))
+                .filter(SampleV1Constructor::isPointInsideQ4)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isPointInsideQ4(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(P41, P42, P45, height, triangularPyramid.getCentroid());
     }
 
     public static Collection<Polyhedron> selectQ5() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(P51, P52, P54, height, triangularPyramid.getCentroid()))
+                .filter(SampleV1Constructor::isPointInsideQ5)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isPointInsideQ5(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(P51, P52, P54, height, triangularPyramid.getCentroid());
     }
 
     public static Collection<Polyhedron> selectQ6() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(P61, P62, P64, height, triangularPyramid.getCentroid()))
+                .filter(SampleV1Constructor::isPointInsideQ6)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isPointInsideQ6(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(P61, P62, P64, height, triangularPyramid.getCentroid());
     }
 
     public static Collection<Polyhedron> selectC1() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(C11, C12, C21, height, triangularPyramid.getCentroid()))
+                .filter(SampleV1Constructor::isPointInsideC1)
                 .collect(Collectors.toList());
     }
+
+    public static boolean isPointInsideC1(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(C11, C12, C21, height, triangularPyramid.getCentroid());
+    }
+
     public static Collection<Polyhedron> selectC2() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(C12, C13, C22, height, triangularPyramid.getCentroid()))
+                .filter(SampleV1Constructor::isPointInsideC2)
                 .collect(Collectors.toList());
     }
+
+    public static boolean isPointInsideC2(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(C12, C13, C22, height, triangularPyramid.getCentroid());
+    }
+
     public static Collection<Polyhedron> selectC3() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(C13, C14, C23, height, triangularPyramid.getCentroid()))
+                .filter(SampleV1Constructor::isPointInsideC3)
                 .collect(Collectors.toList());
     }
+
+    public static boolean isPointInsideC3(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(C13, C14, C23, height, triangularPyramid.getCentroid());
+    }
+
     public static Collection<Polyhedron> selectC4() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(C14, C15, C24, height, triangularPyramid.getCentroid()))
+                .filter(SampleV1Constructor::isPointInsideC4)
                 .collect(Collectors.toList());
     }
+
+    public static boolean isPointInsideC4(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(C14, C15, C24, height, triangularPyramid.getCentroid());
+    }
+
     public static Collection<Polyhedron> selectC5() {
         return Euclidean3DSpace.getPolyhedra().stream()
                 .map(TriangularPyramid.class::cast)
-                .filter(triangularPyramid -> Euclidean3DSelector.isPointInsideCube(C15, C16, C25, height, triangularPyramid.getCentroid()))
+                .filter(SampleV1Constructor::isPointInsideC5)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isPointInsideC5(TriangularPyramid triangularPyramid) {
+        return Euclidean3DSelector.isPointInsideCube(C15, C16, C25, height, triangularPyramid.getCentroid());
     }
 
 }
