@@ -95,8 +95,8 @@ public class SampleV1Reader {
         sb.append(getTemperature(condition));
     }
 
-    private static BufferedWriter getTitledFile() throws IOException {
-        File file = new File(Euclidean3DInputOutput.root + SampleV1Simulator.SAMPLE_V1_SIMULATION + Euclidean3DInputOutput.extension);
+    private BufferedWriter getTitledFile() throws IOException {
+        File file = new File(Euclidean3DInputOutput.root + resumeName + Euclidean3DInputOutput.extension);
         if (file.exists()) {
             FileWriter fileWriter = new FileWriter(file, true);
             return new BufferedWriter(fileWriter);
