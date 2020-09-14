@@ -15,16 +15,15 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 public class SampleV1Reader {
-
-    private static String RESUME = "Resume";
-
-    public static void main(String[] args) {
-        createResume();
+    private String resumeName;
 
 
+    public SampleV1Reader(String resumeName) {
+        this.resumeName = resumeName;
     }
 
-    public static double getTemperature(Predicate<TriangularPyramid> isSelected) {
+
+    private static double getTemperature(Predicate<TriangularPyramid> isSelected) {
         double regionHeatCapcity = 0;
         double temperatureTimesHeatCapacity = 0;
 
@@ -42,10 +41,10 @@ public class SampleV1Reader {
         return temperatureTimesHeatCapacity / regionHeatCapcity;
     }
 
-    public static void createResume() {
-        File file = new File(Euclidean3DInputOutput.root + SampleV1Simulator.SAMPLE_V1_SIMULATION + "e");
+    public void createResume() {
+        File file = new File(Euclidean3DInputOutput.root + resumeName + "e");
         Arrays.stream(Objects.requireNonNull(file.getParentFile().listFiles()))
-                .filter(file1 -> file1.getName().startsWith(SampleV1Simulator.SAMPLE_V1_SIMULATION + "e"))
+                .filter(file1 -> file1.getName().startsWith(resumeName + "e"))
                 .sorted(Comparator.comparing(File::getName))
                 .forEach(file1 -> {
                     Euclidean3DSpace.clean();
@@ -55,7 +54,7 @@ public class SampleV1Reader {
 
     }
 
-    public static void writeLineResume(double currentTime) {
+    public void writeLineResume(double currentTime) {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("%.2E", currentTime));
         appendTemperatureOfRegion(sb, SampleV1Constructor::isPointInsideR0);
@@ -96,7 +95,7 @@ public class SampleV1Reader {
         sb.append(getTemperature(condition));
     }
 
-    public static BufferedWriter getTitledFile() throws IOException {
+    private static BufferedWriter getTitledFile() throws IOException {
         File file = new File(Euclidean3DInputOutput.root + SampleV1Simulator.SAMPLE_V1_SIMULATION + Euclidean3DInputOutput.extension);
         if (file.exists()) {
             FileWriter fileWriter = new FileWriter(file, true);
@@ -104,9 +103,9 @@ public class SampleV1Reader {
         } else {
             file.getParentFile().mkdirs();
             file.createNewFile();
-            FileWriter fileWriter = new FileWriter(file,true);
+            FileWriter fileWriter = new FileWriter(file, true);
             BufferedWriter result = new BufferedWriter(fileWriter);
-            result.write("t\t" +
+            result.write("t\t\t" +
                     "R0\t\t\t" +
                     "R1\t\t\t" +
                     "R2\t\t\t" +

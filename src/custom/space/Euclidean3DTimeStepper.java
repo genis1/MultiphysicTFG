@@ -1,7 +1,6 @@
 package custom.space;
 
 import custom.objects.temperature.diffusion.TemperatureContainer;
-import custom.objects.temperature.diffusion.TemperatureInterface;
 
 import java.util.function.Consumer;
 
@@ -25,12 +24,12 @@ public class Euclidean3DTimeStepper {
     }
 
     public static void computeTimeStep() {
-        Euclidean3DSpace.getFaces().forEach( temperatureInterface -> temperatureInterface.addHeatTransferedToParentPolyehdra(Euclidean3DTimeStepper.getTimeStep()));
+        Euclidean3DSpace.getFaces().forEach(temperatureInterface -> temperatureInterface.addHeatTransferedToParentPolyehdra(Euclidean3DTimeStepper.getTimeStep()));
         Euclidean3DSpace.getPolyhedra().forEach(TemperatureContainer::computeNewTemperature);
         time = Euclidean3DTimeStepper.getTime() + Euclidean3DTimeStepper.getTimeStep();
     }
 
-    public static void computeTemperatureStepWithHeatSource(Consumer<Double> heatSource){
+    public static void computeTemperatureStepWithHeatSource(Consumer<Double> heatSource) {
         Euclidean3DSpace.getFaces().forEach(temperatureInterface -> temperatureInterface.addHeatTransferedToParentPolyehdra(Euclidean3DTimeStepper.getTimeStep()));
         heatSource.accept(timeStep);
         Euclidean3DSpace.getPolyhedra().forEach(TemperatureContainer::computeNewTemperature);

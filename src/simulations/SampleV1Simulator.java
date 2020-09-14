@@ -9,7 +9,7 @@ import custom.space.Euclidean3DSplitter;
 import custom.space.Euclidean3DTimeStepper;
 
 public class SampleV1Simulator {
-    static String SAMPLE_V1_INITIAL_MESH = "sampleV1InitialMesh";
+    public static String SAMPLE_V1_INITIAL_MESH = "sampleV1InitialMesh";
     static String SAMPLE_V1_SPLITTED_MESH = "sampleV1SplittedMesh";
     static String SAMPLE_V1_SIMULATION = "sampleV1";
     static String SAMPLE_V1_SIMULATION_TIMEe0 = "sampleV1e0";
@@ -81,64 +81,56 @@ public class SampleV1Simulator {
         Euclidean3DTimeStepper.setInitialTimeAndTimeStep(currentTime, timeStep);
         int counter = 0;
         long startTime = System.nanoTime();
+        SampleV1Reader sampleV1Reader = new SampleV1Reader(SAMPLE_V1_SIMULATION);
         while (Euclidean3DTimeStepper.getTime() < 100) {
             Euclidean3DTimeStepper.computeTemperatureStepWithHeatSource(SampleV1Simulator::heatSource);
             counter++;
             currentTime = Euclidean3DTimeStepper.getTime();
-            if (currentTime <= timeStep*1e1) {
+            if (counter <= 1e1) {
                 System.out.println("Computed " + counter + " simulation steps, took " + ((System.nanoTime() - startTime) * 1e-9) + " seconds.");
                 Euclidean3DInputOutput.save(SAMPLE_V1_SIMULATION_TIMEe0);
-                SampleV1Reader.writeLineResume(currentTime);
+                sampleV1Reader.writeLineResume(currentTime);
                 startTime = System.nanoTime();
-                counter = 0;
-            } else if (currentTime <= timeStep*1e2 && counter == 1e1) {
+            } else if (counter <= 1e2 && counter%1e1 == 0) {
                 System.out.println("Computed " + counter + " simulation steps, took " + ((System.nanoTime() - startTime) * 1e-9) + " seconds.");
                 Euclidean3DInputOutput.save(SAMPLE_V1_SIMULATION_TIMEe1);
-                SampleV1Reader.writeLineResume(currentTime);
+                sampleV1Reader.writeLineResume(currentTime);
                 startTime = System.nanoTime();
-                counter = 0;
-            } else if (currentTime <= timeStep*1e3 && counter == 1e2) {
+            } else if (counter <= 1e3 && counter%1e2 == 0) {
                 System.out.println("Computed " + counter + " simulation steps, took " + ((System.nanoTime() - startTime) * 1e-9) + " seconds.");
                 Euclidean3DInputOutput.save(SAMPLE_V1_SIMULATION_TIMEe2);
-                SampleV1Reader.writeLineResume(currentTime);
+                sampleV1Reader.writeLineResume(currentTime);
                 startTime = System.nanoTime();
-                counter = 0;
-            } else if (currentTime <= timeStep*1e4 && counter == 1e3) {
+            } else if (counter <= 1e4 && counter%1e3 == 0) {
                 System.out.println("Computed " + counter + " simulation steps, took " + ((System.nanoTime() - startTime) * 1e-9) + " seconds.");
                 Euclidean3DInputOutput.save(SAMPLE_V1_SIMULATION_TIMEe3);
-                SampleV1Reader.writeLineResume(currentTime);
+                sampleV1Reader.writeLineResume(currentTime);
                 startTime = System.nanoTime();
-                counter = 0;
-            } else if (currentTime <= timeStep*1e5 && counter == 1e4) {
+            } else if (counter <= 1e5 && counter%1e4 == 0) {
                 System.out.println("Computed " + counter + " simulation steps, took " + ((System.nanoTime() - startTime) * 1e-9) + " seconds.");
                 Euclidean3DInputOutput.save(SAMPLE_V1_SIMULATION_TIMEe4);
-                SampleV1Reader.writeLineResume(currentTime);
+                sampleV1Reader.writeLineResume(currentTime);
                 startTime = System.nanoTime();
-                counter = 0;
-            } else if (currentTime <= timeStep*1e6 && counter == 1e5) {
+            } else if (counter <= 1e6 && counter%1e5 == 0) {
                 System.out.println("Computed " + counter + " simulation steps, took " + ((System.nanoTime() - startTime) * 1e-9) + " seconds.");
                 Euclidean3DInputOutput.save(SAMPLE_V1_SIMULATION_TIMEe5);
-                SampleV1Reader.writeLineResume(currentTime);
+                sampleV1Reader.writeLineResume(currentTime);
                 startTime = System.nanoTime();
-                counter = 0;
-            } else if (currentTime <= timeStep*1e7 && counter == 1e6) {
+            } else if (counter <= 1e7 && counter%1e6 == 0){
                 System.out.println("Computed " + counter + " simulation steps, took " + ((System.nanoTime() - startTime) * 1e-9) + " seconds.");
                 Euclidean3DInputOutput.save(SAMPLE_V1_SIMULATION_TIMEe5);
-                SampleV1Reader.writeLineResume(currentTime);
+                sampleV1Reader.writeLineResume(currentTime);
                 startTime = System.nanoTime();
-                counter = 0;
-            } else if (currentTime <= timeStep*1e8 && counter == 1e7) {
+            } else if (counter <= 1e8 && counter%1e7 == 0) {
                 System.out.println("Computed " + counter + " simulation steps, took " + ((System.nanoTime() - startTime) * 1e-9) + " seconds.");
                 Euclidean3DInputOutput.save(SAMPLE_V1_SIMULATION_TIMEe5);
-                SampleV1Reader.writeLineResume(currentTime);
+                sampleV1Reader.writeLineResume(currentTime);
                 startTime = System.nanoTime();
-                counter = 0;
-            } else if (currentTime <= timeStep*1e9 && counter == 1e8) {
+            } else if (counter <= 1e9 && counter%1e8 == 0) {
                 System.out.println("Computed " + counter + " simulation steps, took " + ((System.nanoTime() - startTime) * 1e-9) + " seconds.");
                 Euclidean3DInputOutput.save(SAMPLE_V1_SIMULATION_TIMEe5);
-                SampleV1Reader.writeLineResume(currentTime);
+                sampleV1Reader.writeLineResume(currentTime);
                 startTime = System.nanoTime();
-                counter = 0;
             }
         }
     }

@@ -3,6 +3,7 @@ package custom.objects.temperature.diffusion;
 public class Materials {
 
     public enum TemperatureDiffusion {
+        //thermal conductivity( W/m*K), density ( kg/m^3), specific heat capacity (J/kg*K)
         LaAlO3(7.5, 6000, 427),
         SrTiO3(12, 5120, 530);
         private final double thermalConductivity;
