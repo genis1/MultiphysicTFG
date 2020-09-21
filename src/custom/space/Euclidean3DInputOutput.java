@@ -10,7 +10,7 @@ public class Euclidean3DInputOutput {
 
     public static final String root = "simulations/";
     public static final String extension = ".tsv";
-    private static final String SEPARATOR = "_";
+    public static final String SEPARATOR = "_";
 
     public static double read(String string) {
         File file = findFile(string);

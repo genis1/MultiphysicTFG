@@ -46,6 +46,10 @@ public class Vector implements Comparable<Vector> {
         return new Vector(this.getXCoordinate() / divisor, this.getYCoordinate() / divisor, this.getZCoordinate() / divisor);
     }
 
+    public Vector multiply(double multiple) {
+        return new Vector(this.getXCoordinate() * multiple, this.getYCoordinate() * multiple, this.getZCoordinate() * multiple);
+    }
+
     @Override
     public int compareTo(Vector o) {
         if (this.getXCoordinate() != o.getXCoordinate()) {

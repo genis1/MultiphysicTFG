@@ -160,7 +160,9 @@ public class Euclidean3DSpace {
     private static void removeFace(TemperatureInterface face, Polyhedron polyhedron) {
         face.removeParentPolyhedron(polyhedron);
         if (face.getParentPolyhedra().isEmpty()) {
-            Euclidean3DSpace.faces.remove(face);
+            boolean removed = Euclidean3DSpace.faces.remove(face);
+            if (!removed)
+                throw new IllegalArgumentException("Face not found");
             face.getEdges().forEach(edge -> Euclidean3DSpace.removeEdge(edge, face));
         }
     }
@@ -171,7 +173,9 @@ public class Euclidean3DSpace {
     }
 
     private static void removePolyhedron(Polyhedron polyhedron) {
-        Euclidean3DSpace.polyhedra.remove(polyhedron);
+        boolean removed = Euclidean3DSpace.polyhedra.remove(polyhedron);
+        if (!removed)
+            throw new IllegalArgumentException("Polyhedron not found");
     }
 
     public static Set<TemperatureContainer> getPolyhedra() {

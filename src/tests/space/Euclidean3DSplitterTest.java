@@ -23,7 +23,7 @@ public class Euclidean3DSplitterTest extends ConstantUtils {
         //testSplitingAdjacentSquarePyramid();
         //testSplittingAdjacentSquares();
         testSplittingAdjacentTriangularPrisms();
-        testSplittingMantainsMaterial();
+        //testSplittingMantainsMaterial();
     }
 
     public static void testSplitting3pyramids() {

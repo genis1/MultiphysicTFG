@@ -77,4 +77,11 @@ public class VectorUtils {
         vector = rotateYAxis(vector, 10);
         return rotateZAxis(vector, 20);
     }
+
+    public static Point meanPoint(Point point0, Point point1) {
+        double xCoordinate = (point0.getXCoordinate() + point1.getXCoordinate()) / 2;
+        double yCoordinate = (point0.getYCoordinate() + point1.getYCoordinate()) / 2;
+        double zCoordinate = (point0.getZCoordinate() + point1.getZCoordinate()) / 2;
+        return new Point(xCoordinate, yCoordinate, zCoordinate);
+    }
 }

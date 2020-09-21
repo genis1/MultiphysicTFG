@@ -17,15 +17,15 @@ import java.util.stream.Collectors;
 public class SampleV1Constructor {
 
     private static double T = 298d;
-    public static Vector height = new Vector(0, 0, 2.7e-9);
+    private static Vector height = new Vector(0, 0, 2.7e-9);
     private static Vector supportHeight = new Vector(0, 0, -0.5e-3);
 
     private static double padSide = 800e-6;
     private static double padToCenter = 1000e-6;
     private static double padToCenterY = padToCenter * Math.sqrt(3) / 2;
     private static double padToCenterX = padToCenter / 2;
-    public static double lengthBar = 30e-6;
-    public static double widthBar = 4e-6;
+    private static double lengthBar = 30e-6;
+    private static double widthBar = 4e-6;
     private static double xSpacing = padToCenter / 2;
     private static double ySpacing = xSpacing;
 
@@ -248,7 +248,7 @@ public class SampleV1Constructor {
         Parallelepiped EQ20 = Euclidean3DSpace.getOrCreateParallelepiped(P61, VectorUtils.subtraction(EA1, P61), leftMargin, height, material, temperature);
     }
 
-    private static Parallelepiped getOrCreateParallelepiped(Point c11, Point c12, Point c21, Vector height, Materials.TemperatureDiffusion laAlO3, double t) {
+    public static Parallelepiped getOrCreateParallelepiped(Point c11, Point c12, Point c21, Vector height, Materials.TemperatureDiffusion laAlO3, double t) {
         return Euclidean3DSpace.getOrCreateParallelepiped(c11, VectorUtils.subtraction(c12, c11), VectorUtils.subtraction(c21, c11), height, laAlO3, t);
     }
 

@@ -93,7 +93,7 @@ public class TemperatureInterface extends Face {
         double expFactor = 1 - Math.pow(Math.E, -(c0 + c1) * deltaTime);
         double dT0 = (T1 - T0) * H1 * expFactor / (H0 + H1);
         double dT1 = (T0 - T1) * H0 * expFactor / (H0 + H1);
-        if (expFactor > 1d / 4) {
+        if (expFactor > 1d / 5) {
             throw new IllegalStateException("Time discratization is too big for model");
         }
         container0.add_dT(dT0);

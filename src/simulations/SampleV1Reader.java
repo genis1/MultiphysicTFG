@@ -23,7 +23,7 @@ public class SampleV1Reader {
     }
 
 
-    private static double getTemperature(Predicate<TriangularPyramid> isSelected) {
+    public static double getTemperature(Predicate<TriangularPyramid> isSelected) {
         double regionHeatCapcity = 0;
         double temperatureTimesHeatCapacity = 0;
 

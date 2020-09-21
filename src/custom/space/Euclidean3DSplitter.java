@@ -27,8 +27,8 @@ public class Euclidean3DSplitter {
         return Euclidean3DSpace.getEdges().stream()
                 .sorted((edge0, edge1) -> {
                     double edgeDifference = edge0.getLength() - edge1.getLength();
-                    if (edgeDifference > 0) return 1;
-                    else if (edgeDifference < 0) return -1;
+                    if (edgeDifference > 0) return -1;
+                    else if (edgeDifference < 0) return 1;
                     else return 0;
                 })
                 .limit(i)
@@ -49,12 +49,10 @@ public class Euclidean3DSplitter {
 
     public static Edge findLongestEdgeWithParentPolyhedraSatisfying(Predicate<TriangularPyramid> condition) {
         Optional<Edge> edge = Euclidean3DSpace.getEdges().stream()
-                .filter(edge1 -> {
-                    return edge1.getAdjacentFaces().stream()
-                            .flatMap(face -> face.getParentPolyhedra().stream())
-                            .map(TriangularPyramid.class::cast)
-                            .anyMatch(condition);
-                })
+                .filter(edge1 -> edge1.getAdjacentFaces().stream()
+                        .flatMap(face -> face.getParentPolyhedra().stream())
+                        .map(TriangularPyramid.class::cast)
+                        .anyMatch(condition))
                 .reduce(((edge1, edge2) -> {
                     if (edge1.getLength() > edge2.getLength()) {
                         return edge1;
